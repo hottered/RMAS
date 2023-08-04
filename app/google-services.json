@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "124475769818",
+    "firebase_url": "https://fishingapplicationfax-default-rtdb.firebaseio.com",
+    "project_id": "fishingapplicationfax",
+    "storage_bucket": "fishingapplicationfax.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:124475769818:android:f882eee840a53f2f0376e3",
+        "android_client_info": {
+          "package_name": "com.example.fishingapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "124475769818-sn3j2on4csdbto5bpepopu3tqmo5jo2i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAkz0bC5qqzG0h3WFox98rZr7JkPlWvGzA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "124475769818-sn3j2on4csdbto5bpepopu3tqmo5jo2i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
