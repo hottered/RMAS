@@ -19,12 +19,21 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
         firebaseAuth = FirebaseAuth.getInstance();
+
+//        if(firebaseAuth.currentUser != null)
+//        {
+//            val intent = Intent(this,HomePage::class.java)
+//            startActivity(intent);
+//            finish()
+//        }
 
         binding.gotosignupTextview.setOnClickListener{
             startActivity(
                 Intent(this,RegisterActivity::class.java)
             )
+            finish()
         }
         binding.loginbuttonLogin.setOnClickListener {
             val email = binding.emailEdittextLogin.text.toString();
@@ -41,6 +50,7 @@ class LoginActivity : AppCompatActivity() {
                         Log.d("Login:", "signInWithEmail:success")
                         val intent = Intent(this,HomePage::class.java)
                         startActivity(intent);
+                        finish()
 //                        val user = auth.currentUser
 //                        updateUI(user)
                     } else {
@@ -53,13 +63,14 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-
-        if(firebaseAuth.currentUser != null)
-        {
-            val intent = Intent(this,HomePage::class.java)
-            startActivity(intent);
-        }
-    }
+//    override fun onStart() {
+//        super.onStart()
+//
+//        if(firebaseAuth.currentUser != null)
+//        {
+//            val intent = Intent(this,HomePage::class.java)
+//            startActivity(intent);
+//            finish()
+//        }
+//    }
 }

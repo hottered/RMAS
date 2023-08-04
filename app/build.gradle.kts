@@ -47,6 +47,11 @@ dependencies {
     // When using the BoM, you don't specify versions in Firebase library dependencies
 //    implementation("com.google.firebase:firebase-database-ktx")
 
+    //googleMaps
+    implementation ("com.google.android.gms:play-services-maps:18.1.0")
+    implementation ("com.google.android.gms:play-services-location:21.0.1")
+
+    //rest
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.9.0")
