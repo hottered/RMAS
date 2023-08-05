@@ -1,30 +1,19 @@
 package com.example.fishingapplication
 
-import android.app.Activity
-import android.app.AlertDialog
 import android.content.Intent
-import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
-import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.result.ActivityResultCallback
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import de.hdodenhof.circleimageview.CircleImageView
-import java.io.IOException
-import java.util.Date
 
 class RegisterActivity : AppCompatActivity() {
 
@@ -65,15 +54,13 @@ class RegisterActivity : AppCompatActivity() {
             Toast.makeText(this, email, Toast.LENGTH_SHORT).show()
 
             auth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this) { task ->
+                .addOnCompleteListener(RegisterActivity()) { task ->
                     if (task.isSuccessful) {
                         Log.d("Main", "createUserWithEmail:success")
                         Toast.makeText(this, "Authentication success.", Toast.LENGTH_SHORT).show()
 
                         uploadData(username);
-                        val intent = Intent(this,LoginActivity::class.java)
-                        startActivity(intent);
-                        finish()
+
                     } else {
                         Log.w("Main", "createUserWithEmail:failure", task.exception)
                         Toast.makeText(baseContext, "Authentication failed.", Toast.LENGTH_SHORT).show()
@@ -96,8 +83,10 @@ class RegisterActivity : AppCompatActivity() {
             if(it.isSuccessful){
                 reference.downloadUrl.addOnSuccessListener { task->
                     uploadInfo(username,task.toString())
+
                 }
             }
+
         }
     }
 
@@ -109,6 +98,9 @@ class RegisterActivity : AppCompatActivity() {
         ref.setValue(user)
             .addOnSuccessListener {
                 Toast.makeText(this,"Successfullt added to database",Toast.LENGTH_SHORT).show();
+                val intent = Intent(this,LoginActivity::class.java)
+                startActivity(intent)
+                finish();
             }
     }
 

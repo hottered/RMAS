@@ -1,11 +1,10 @@
 package com.example.fishingapplication
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.example.fishingapplication.databinding.ActivityLoginBinding
 import com.google.firebase.auth.FirebaseAuth
 
@@ -22,12 +21,12 @@ class LoginActivity : AppCompatActivity() {
 
         firebaseAuth = FirebaseAuth.getInstance();
 
-        if(firebaseAuth.currentUser != null)
-        {
-            val intent = Intent(this,HomePage::class.java)
-            startActivity(intent);
-            finish()
-        }
+//        if(firebaseAuth.currentUser != null)
+//        {
+//            val intent = Intent(this,HomePage::class.java)
+//            startActivity(intent);
+//            finish()
+//        }
 
         binding.gotosignupTextview.setOnClickListener{
             startActivity(
@@ -63,14 +62,16 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-//    override fun onStart() {
-//        super.onStart()
-//
-//        if(firebaseAuth.currentUser != null)
-//        {
-//            val intent = Intent(this,HomePage::class.java)
-//            startActivity(intent);
-//            finish()
-//        }
-//    }
+    override fun onStart() {
+        super.onStart()
+
+
+        if(firebaseAuth.currentUser != null)
+        {
+            Toast.makeText(this,"Ovde sam u login",Toast.LENGTH_SHORT).show();
+            val intent = Intent(this,HomePage::class.java)
+            startActivity(intent);
+            finish()
+        }
+    }
 }
