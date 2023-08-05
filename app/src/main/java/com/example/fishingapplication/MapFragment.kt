@@ -1,23 +1,23 @@
 package com.example.fishingapplication
 import android.Manifest
 import android.content.pm.PackageManager
+import android.location.Location
 import android.os.Bundle
-import androidx.core.app.ActivityCompat
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.google.android.gms.maps.CameraUpdateFactory
+import android.widget.TextView
+import androidx.core.app.ActivityCompat
+import androidx.fragment.app.Fragment
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
-import android.location.Location
-import android.util.Log
-import android.widget.Button
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -66,11 +66,12 @@ class MapFragment : Fragment(), OnMapReadyCallback{
                     val markerData = markerSnapshot.getValue(MarkerData::class.java)
                     if (markerData != null && markerData.latitude != null && markerData.longitude != null) {
                         val markerLatLng = LatLng(markerData.latitude, markerData.longitude)
-                        googleMap.addMarker(
+                        val marker = googleMap.addMarker(
                             MarkerOptions()
                                 .position(markerLatLng)
                                 .title(markerData.title)
                         )
+                        marker?.snippet = "Rating: ${markerData.rating ?: "Not rated yet"}"
                     }
                 }
             }
@@ -79,6 +80,28 @@ class MapFragment : Fragment(), OnMapReadyCallback{
                 Log.e("MapFragment", "Failed to fetch markers: ${error.message}")
             }
         })
+
+        googleMap.setInfoWindowAdapter(object : GoogleMap.InfoWindowAdapter {
+            override fun getInfoContents(marker: Marker): View {
+                val view  = layoutInflater.inflate(R.layout.marker_info_contents,null)
+                val titleView = view.findViewById<TextView>(R.id.marker_title)
+                val ratingView = view.findViewById<TextView>(R.id.marker_rating)
+
+                titleView.text = marker.title
+                ratingView.text = marker.snippet
+
+                return view;
+            }
+
+            override fun getInfoWindow(marker: Marker): View? {
+                return null
+            }
+
+        })
+        googleMap.setOnMarkerClickListener {marker->
+            marker.showInfoWindow()
+            true
+        }
     }
     private fun enableMyLocation() {
         if (ActivityCompat.checkSelfPermission(
