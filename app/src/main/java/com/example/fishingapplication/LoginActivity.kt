@@ -22,12 +22,12 @@ class LoginActivity : AppCompatActivity() {
 
         firebaseAuth = FirebaseAuth.getInstance();
 
-//        if(firebaseAuth.currentUser != null)
-//        {
-//            val intent = Intent(this,HomePage::class.java)
-//            startActivity(intent);
-//            finish()
-//        }
+        if(firebaseAuth.currentUser != null)
+        {
+            val intent = Intent(this,HomePage::class.java)
+            startActivity(intent);
+            finish()
+        }
 
         binding.gotosignupTextview.setOnClickListener{
             startActivity(

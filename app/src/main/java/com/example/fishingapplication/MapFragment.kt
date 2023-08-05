@@ -1,5 +1,4 @@
 package com.example.fishingapplication
-
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -17,12 +16,21 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import android.location.Location
+import android.util.Log
+import android.widget.Button
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
-class MapFragment : Fragment(), OnMapReadyCallback {
+class MapFragment : Fragment(), OnMapReadyCallback{
 
-    private lateinit var googleMap: GoogleMap
+    lateinit var googleMap: GoogleMap
     private lateinit var mapView: MapView
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+
+    private lateinit var btnPlaceMarker:FloatingActionButton
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,6 +43,11 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         mapView.onResume()
         mapView.getMapAsync(this)
 
+        btnPlaceMarker = view.findViewById(R.id.btn_place_marker)
+        btnPlaceMarker.setOnClickListener {
+            placeMarkerAtCurrentLocation()
+        }
+
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
         return view
@@ -43,8 +56,30 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
         enableMyLocation()
+        fetchMarkersFromFirebase()
     }
+    private fun fetchMarkersFromFirebase() {
+        val databaseReference = FirebaseDatabase.getInstance().getReference("markers")
+        databaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for (markerSnapshot in snapshot.children) {
+                    val markerData = markerSnapshot.getValue(MarkerData::class.java)
+                    if (markerData != null && markerData.latitude != null && markerData.longitude != null) {
+                        val markerLatLng = LatLng(markerData.latitude, markerData.longitude)
+                        googleMap.addMarker(
+                            MarkerOptions()
+                                .position(markerLatLng)
+                                .title(markerData.title)
+                        )
+                    }
+                }
+            }
 
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("MapFragment", "Failed to fetch markers: ${error.message}")
+            }
+        })
+    }
     private fun enableMyLocation() {
         if (ActivityCompat.checkSelfPermission(
                 requireContext(),
@@ -59,35 +94,57 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             )
             return
         }
-
-        // If permission is granted, show current location and add a marker
         googleMap.isMyLocationEnabled = true
+    }
+    private fun placeMarkerAtCurrentLocation() {
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // Request location permission
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                LOCATION_PERMISSION_REQUEST_CODE
+            )
+            return
+        }
+        // If permission is granted, add a marker at the current location
+
+//        fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+//            if (location != null) {
+//                val currentLatLng = LatLng(location.latitude, location.longitude)
+//                googleMap.addMarker(
+//                    MarkerOptions()
+//                        .position(currentLatLng)
+//                        .title("Current Location"))
+//                googleMap.moveCamera(
+//                    CameraUpdateFactory
+//                        .newLatLngZoom(currentLatLng, DEFAULT_ZOOM))
+//            }
+//        }
         fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
             if (location != null) {
                 val currentLatLng = LatLng(location.latitude, location.longitude)
-                googleMap.addMarker(MarkerOptions().position(currentLatLng).title("Current Location"))
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, DEFAULT_ZOOM))
-            }
-        }
-    }
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission granted, enable location and add the marker
-                enableMyLocation()
-            } else {
-                // Permission denied, handle the case here (e.g., show a message or disable map features)
-            }
-        }
-    }
 
+                // Open AddLocationFragment and pass the current location as an argument
+                val addLocationFragment = AddLocationFragment()
+                val args = Bundle()
+                args.putParcelable("current_location", currentLatLng)
+                addLocationFragment.arguments = args
+
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, addLocationFragment)
+                    .addToBackStack(null)
+                    .commit()
+            }
+        }
+    }
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1
         private const val DEFAULT_ZOOM = 15f
     }
+
+
 }
