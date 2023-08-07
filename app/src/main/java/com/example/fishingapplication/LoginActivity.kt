@@ -65,7 +65,6 @@ class LoginActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
-
         if(firebaseAuth.currentUser != null)
         {
             Toast.makeText(this,"Ovde sam u login",Toast.LENGTH_SHORT).show();

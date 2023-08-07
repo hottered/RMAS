@@ -59,7 +59,7 @@ class RegisterActivity : AppCompatActivity() {
                         Log.d("Main", "createUserWithEmail:success")
                         Toast.makeText(this, "Authentication success.", Toast.LENGTH_SHORT).show()
 
-                        uploadData(username);
+                        uploadData(username,email);
 
                     } else {
                         Log.w("Main", "createUserWithEmail:failure", task.exception)
@@ -77,12 +77,12 @@ class RegisterActivity : AppCompatActivity() {
 
     }
 
-    private fun uploadData(username: String) {
+    private fun uploadData(username: String,email :String) {
         val reference = storage.reference.child("Profile").child(auth.currentUser?.uid.toString())
         reference.putFile(selectedImg).addOnCompleteListener{
             if(it.isSuccessful){
                 reference.downloadUrl.addOnSuccessListener { task->
-                    uploadInfo(username,task.toString())
+                    uploadInfo(username,email,task.toString())
 
                 }
             }
@@ -90,11 +90,11 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
-    private fun uploadInfo(username: String,imgUrl: String) {
+    private fun uploadInfo(username: String,email:String,imgUrl: String) {
         val uid = FirebaseAuth.getInstance().uid ?: ""
         val ref = FirebaseDatabase.getInstance().getReference("/users/$uid")
 
-        val user = User(uid, username,imgUrl )
+        val user = User(uid, username,email,imgUrl )
         ref.setValue(user)
             .addOnSuccessListener {
                 Toast.makeText(this,"Successfullt added to database",Toast.LENGTH_SHORT).show();

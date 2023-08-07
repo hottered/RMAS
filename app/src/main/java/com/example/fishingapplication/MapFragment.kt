@@ -26,7 +26,7 @@ import com.google.firebase.database.ValueEventListener
 
 class MapFragment : Fragment(), OnMapReadyCallback{
 
-    lateinit var googleMap: GoogleMap
+    private lateinit var googleMap: GoogleMap
     private lateinit var mapView: MapView
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
