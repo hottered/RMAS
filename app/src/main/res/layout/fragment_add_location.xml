@@ -1,47 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/frameLayout3"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#00BCD4"
-    tools:context=".AddLocationFragment">
+    android:fillViewport="true">
 
-    <ImageView
-        android:id="@+id/image_location_marker"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_marginTop="32dp"
-        android:scaleType="fitXY"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_launcher_background" />
+    <androidx.constraintlayout.widget.ConstraintLayout
 
-    <EditText
-        android:id="@+id/title_marker_custom"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="32dp"
-        android:background="@color/white"
-        android:ems="10"
-        android:hint="Title"
-        android:inputType="text"
-        android:padding="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/image_location_marker" />
-
-    <Button
-        android:id="@+id/addPlace_button"
-        android:layout_width="150dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="Add a place"
-        app:layout_constraintEnd_toEndOf="@+id/title_marker_custom"
-        app:layout_constraintStart_toStartOf="@+id/title_marker_custom"
-        app:layout_constraintTop_toBottomOf="@+id/title_marker_custom" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:background="#00BCD4"
+        tools:context=".AddLocationFragment">
+
+
+        <ImageView
+            android:id="@+id/image_location_marker"
+            android:layout_width="0dp"
+            android:layout_height="150dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="32dp"
+            android:scaleType="fitXY"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_launcher_background" />
+
+        <EditText
+            android:id="@+id/title_marker_custom"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="32dp"
+            android:background="@color/white"
+            android:ems="10"
+            android:hint="Title"
+            android:inputType="text"
+            android:padding="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/image_location_marker" />
+
+        <EditText
+            android:id="@+id/marker_description"
+            android:layout_width="0dp"
+            android:layout_height="180dp"
+            android:layout_marginTop="24dp"
+            android:background="@color/white"
+            android:ems="10"
+            android:gravity="top"
+            android:hint="Description"
+            android:inputType="text|textMultiLine"
+            android:padding="16dp"
+            android:singleLine="false"
+            app:layout_constraintEnd_toEndOf="@+id/title_marker_custom"
+            app:layout_constraintStart_toStartOf="@+id/title_marker_custom"
+            app:layout_constraintTop_toBottomOf="@+id/title_marker_custom" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Most common specie"
+            app:layout_constraintEnd_toEndOf="@+id/marker_description"
+            app:layout_constraintStart_toStartOf="@+id/marker_description"
+            app:layout_constraintTop_toBottomOf="@+id/marker_description" />
+
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/style_spinner_species"
+            android:dropDownWidth="match_parent"
+            app:layout_constraintEnd_toEndOf="@+id/textView2"
+            app:layout_constraintStart_toStartOf="@+id/textView2"
+            app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+        <Button
+            android:id="@+id/addPlace_button"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="Add a place"
+            app:layout_constraintEnd_toEndOf="@+id/spinner"
+            app:layout_constraintStart_toStartOf="@+id/spinner"
+            app:layout_constraintTop_toBottomOf="@+id/spinner" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

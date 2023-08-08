@@ -60,6 +60,7 @@ class MapFragment : Fragment(), OnMapReadyCallback{
     }
     private fun fetchMarkersFromFirebase() {
         val databaseReference = FirebaseDatabase.getInstance().getReference("markers")
+
         databaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 for (markerSnapshot in snapshot.children) {
@@ -100,6 +101,7 @@ class MapFragment : Fragment(), OnMapReadyCallback{
         })
         googleMap.setOnMarkerClickListener {marker->
             marker.showInfoWindow()
+
             true
         }
     }
