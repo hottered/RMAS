@@ -1,5 +1,7 @@
 package com.example.fishingapplication
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -7,23 +9,26 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.storage.FirebaseStorage
 
 class AddLocationFragment : Fragment() {
 
 
     private lateinit var databaseReference: DatabaseReference
     private lateinit var firebaseAuth: FirebaseAuth
+    private lateinit var storage: FirebaseStorage
     private lateinit var user: User
 
-
-
-    private lateinit var markerTitle : EditText
-    private lateinit var btnAddLocation:Button
+    private lateinit var markerTitle: EditText
+    private lateinit var btnAddLocation: Button
+    private lateinit var imageForMarker: ImageView
+    private lateinit var selectedImg: Uri
     private var currentLocation: LatLng? = null
 
 
@@ -36,51 +41,76 @@ class AddLocationFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view =  inflater.inflate(R.layout.fragment_add_location, container, false)
+        val view = inflater.inflate(R.layout.fragment_add_location, container, false)
 
         databaseReference = FirebaseDatabase.getInstance().getReference("users");
-
         firebaseAuth = FirebaseAuth.getInstance();
+        storage = FirebaseStorage.getInstance();
 
         markerTitle = view.findViewById(R.id.title_marker_custom)
         btnAddLocation = view.findViewById(R.id.addPlace_button)
+        imageForMarker = view.findViewById(R.id.image_location_marker)
 
         currentLocation = arguments?.getParcelable("current_location")
-        Log.d("LocationFragment",currentLocation.toString());
+        Log.d("LocationFragment", currentLocation.toString());
         btnAddLocation.setOnClickListener {
             getUserData()
+//            uploadData()
+        }
+        imageForMarker.setOnClickListener {
+            val intent = Intent();
+            intent.action = Intent.ACTION_GET_CONTENT
+            intent.type = "image/*"
+            startActivityForResult(intent, 1)
         }
 
         return view
     }
 
-//    private fun getUserData(uid: String): User? {
-//        val databaseReference = FirebaseDatabase.getInstance().getReference("users/$uid")
-//
-//        databaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
-//            override fun onDataChange(snapshot: DataSnapshot) {
-//                if (snapshot.exists()) {
-//                    val user = snapshot.getValue(User::class.java)
-//                    // User data retrieved successfully
-//                    user?.let {
-//                        // You can use the retrieved user data here or return it
-//                        // For now, let's just log the user's username
-//                        Log.d("AddLocationFragment", "Retrieved user: ${user.username}")
+
+//    private fun uploadMarkerImage(markerKey: String) {
+//        val reference = storage.reference.child("Markers").child(markerKey)
+//        reference.putFile(selectedImg).addOnSuccessListener {
+//            reference.downloadUrl.addOnCompleteListener {
+//                if (it.isSuccessful) {
+//                    reference.downloadUrl.addOnSuccessListener { task ->
+////                    uploadInfo(username,email,task.toString())
+//                        Log.d("ImageUrl", task.toString())
+////                        getUserData(task.toString())
 //                    }
-//                } else {
-//                    // User does not exist
-//                    Log.d("AddLocationFragment", "User with UID $uid does not exist")
 //                }
 //            }
-//
-//            override fun onCancelled(error: DatabaseError) {
-//                // Failed to retrieve user data
-//                Log.e("AddLocationFragment", "Failed to retrieve user data: ${error.message}")
-//            }
-//        })
-//
-//        return null // The actual user data will be returned asynchronously in the callback
+//        }
 //    }
+
+    private fun uploadMarkerImage(markerKey: String) {
+        val reference = storage.reference.child("Markers").child(markerKey)
+        reference.putFile(selectedImg).addOnSuccessListener {
+            reference.downloadUrl.addOnCompleteListener {
+                if (it.isSuccessful) {
+                    reference.downloadUrl.addOnSuccessListener { task ->
+//                    uploadInfo(username,email,task.toString())
+                        Log.d("ImageUrl", task.toString())
+//                        getUserData(task.toString())
+                    }
+                }
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        val userImage = view?.findViewById<ImageView>(R.id.image_location_marker);
+        if (data != null) {
+            if (data.data != null) {
+                selectedImg = data.data!!
+                userImage?.setImageURI(selectedImg)
+//                val textToGoAway = view?.findViewById<TextView>(R.id.uploadimage_textview_register)
+//                textToGoAway.visibility = View.GONE
+            }
+        }
+    }
+
 
     private fun getUserData() {
         val uid = firebaseAuth.currentUser?.uid.toString();
@@ -98,22 +128,28 @@ class AddLocationFragment : Fragment() {
             // Handle any error that occurs while fetching the data
         }
     }
+
     private fun addLocationToFirebase() {
         val title = markerTitle.text.toString().trim()
         if (currentLocation != null) {
 
-//            val uid = FirebaseAuth.getInstance().currentUser?.uid.toString()
-//            val user = getUserData(uid);
 
-//            Log.d("ProfileUser",user?.username.toString());
-
+            //first get ImageUlr
+            //second getuserData
             val markerData = MarkerData(
                 title,
                 currentLocation!!.latitude,
                 currentLocation!!.longitude,
-                user = user)
+                user = user
+            )
+
+
             val databaseReference = FirebaseDatabase.getInstance().getReference("markers")
             val newMarkerReference = databaseReference.push()
+            Log.d("MarkerKey", newMarkerReference.key.toString());
+
+            uploadMarkerImage(newMarkerReference.key.toString())
+
             newMarkerReference.setValue(markerData).addOnSuccessListener {
                 // Marker data uploaded successfully
                 navigateBackToMapFragment()
@@ -123,6 +159,7 @@ class AddLocationFragment : Fragment() {
             }
         }
     }
+
     private fun navigateBackToMapFragment() {
         parentFragmentManager.popBackStack()
     }

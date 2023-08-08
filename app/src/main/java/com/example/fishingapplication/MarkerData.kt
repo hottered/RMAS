@@ -6,6 +6,7 @@ data class MarkerData(
     val latitude: Double? = null,
     val longitude: Double? = null,
     val rating: Double?=null,
+    val imageMarker:String?=null,
     val user: User?=null
 
 )

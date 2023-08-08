@@ -2,22 +2,18 @@ package com.example.fishingapplication
 
 import android.content.Intent
 import android.graphics.BitmapFactory
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.example.fishingapplication.databinding.ActivityHomePageBinding
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import de.hdodenhof.circleimageview.CircleImageView
@@ -62,7 +58,6 @@ class HomePage : AppCompatActivity() {
         if (uid.isNotEmpty()) {
             getUserData()
         }
-
 
         toggle = ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close)
         drawerLayout.addDrawerListener(toggle)
@@ -128,13 +123,14 @@ class HomePage : AppCompatActivity() {
     private fun getUserProfilePicture() {
         storageReference = FirebaseStorage.getInstance().reference.child("Profile/$uid")
         val localFile = File.createTempFile("tempImage", "jpeg")
-        storageReference.getFile(localFile).addOnSuccessListener {
-            val bitmap = BitmapFactory.decodeFile(localFile.absolutePath)
-            imageCircleMenu.setImageBitmap(bitmap)
-        }.addOnFailureListener {
-            Toast.makeText(this, "Something went wrong with picture", Toast.LENGTH_SHORT).show()
-        }
-
+        storageReference.getFile(localFile)
+            .addOnSuccessListener {
+                val bitmap = BitmapFactory.decodeFile(localFile.absolutePath)
+                imageCircleMenu.setImageBitmap(bitmap)
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Something went wrong with picture", Toast.LENGTH_SHORT).show()
+            }
     }
 //    override fun onBackPressed() {
 //        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
