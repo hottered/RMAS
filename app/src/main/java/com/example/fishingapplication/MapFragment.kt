@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
@@ -31,6 +32,7 @@ class MapFragment : Fragment(), OnMapReadyCallback{
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     private lateinit var btnPlaceMarker:FloatingActionButton
+    private lateinit var btnFilters : Button
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,8 +46,17 @@ class MapFragment : Fragment(), OnMapReadyCallback{
         mapView.getMapAsync(this)
 
         btnPlaceMarker = view.findViewById(R.id.btn_place_marker)
+        btnFilters = view.findViewById(R.id.button_filters_map)
+
         btnPlaceMarker.setOnClickListener {
             placeMarkerAtCurrentLocation()
+        }
+        btnFilters.setOnClickListener {
+            val filtersFragment = FilterFragment()
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, filtersFragment)
+                .addToBackStack(null)
+                .commit()
         }
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
