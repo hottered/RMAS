@@ -1,4 +1,5 @@
 package com.example.fishingapplication
+
 import android.Manifest
 import android.content.pm.PackageManager
 import android.location.Location
@@ -25,14 +26,17 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
-class MapFragment : Fragment(), OnMapReadyCallback{
+class MapFragment : Fragment(), OnMapReadyCallback {
 
     private lateinit var googleMap: GoogleMap
     private lateinit var mapView: MapView
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
-    private lateinit var btnPlaceMarker:FloatingActionButton
-    private lateinit var btnFilters : Button
+    private lateinit var btnPlaceMarker: FloatingActionButton
+    private lateinit var btnFilters: Button
+
+    private lateinit var selectedSpecies: ArrayList<String>
+    private lateinit var selectedUsers: ArrayList<String>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,6 +51,12 @@ class MapFragment : Fragment(), OnMapReadyCallback{
 
         btnPlaceMarker = view.findViewById(R.id.btn_place_marker)
         btnFilters = view.findViewById(R.id.button_filters_map)
+
+        selectedUsers = arguments?.getStringArrayList("selectedUsers") ?: ArrayList()
+        selectedSpecies = arguments?.getStringArrayList("selectedSpecies") ?: ArrayList()
+
+        Log.d("FiltersFromMap", selectedSpecies.toString())
+        Log.d("FiltersFromMap", selectedUsers.toString())
 
         btnPlaceMarker.setOnClickListener {
             placeMarkerAtCurrentLocation()
@@ -68,22 +78,35 @@ class MapFragment : Fragment(), OnMapReadyCallback{
         googleMap = map
         enableMyLocation()
         fetchMarkersFromFirebase()
+
     }
+
     private fun fetchMarkersFromFirebase() {
+        Log.d("FetchMarkers is called", "I'm called again")
+
         val databaseReference = FirebaseDatabase.getInstance().getReference("markers")
 
         databaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 for (markerSnapshot in snapshot.children) {
+
                     val markerData = markerSnapshot.getValue(MarkerData::class.java)
-                    if (markerData != null && markerData.latitude != null && markerData.longitude != null) {
-                        val markerLatLng = LatLng(markerData.latitude, markerData.longitude)
-                        val marker = googleMap.addMarker(
-                            MarkerOptions()
-                                .position(markerLatLng)
-                                .title(markerData.title)
-                        )
-                        marker?.snippet = "Rating: ${markerData.rating ?: "Not rated yet"}"
+
+                    if (markerData != null && markerData.latitude != null && markerData.longitude != null)
+                    {
+                        if (
+                            (selectedSpecies.isNullOrEmpty() || selectedSpecies.contains(markerData.commonSpecie))
+                            && (selectedUsers.isNullOrEmpty() || selectedUsers.contains(markerData.user?.username))
+                            )
+                        {
+                            val markerLatLng = LatLng(markerData.latitude, markerData.longitude)
+                            val marker = googleMap.addMarker(
+                                MarkerOptions()
+                                    .position(markerLatLng)
+                                    .title(markerData.title)
+                            )
+                            marker?.snippet = "Rating: ${markerData.rating ?: "Not rated yet"}"
+                        }
                     }
                 }
             }
@@ -95,7 +118,7 @@ class MapFragment : Fragment(), OnMapReadyCallback{
 
         googleMap.setInfoWindowAdapter(object : GoogleMap.InfoWindowAdapter {
             override fun getInfoContents(marker: Marker): View {
-                val view  = layoutInflater.inflate(R.layout.marker_info_contents,null)
+                val view = layoutInflater.inflate(R.layout.marker_info_contents, null)
                 val titleView = view.findViewById<TextView>(R.id.marker_title)
                 val ratingView = view.findViewById<TextView>(R.id.marker_rating)
 
@@ -110,12 +133,13 @@ class MapFragment : Fragment(), OnMapReadyCallback{
             }
 
         })
-        googleMap.setOnMarkerClickListener {marker->
+        googleMap.setOnMarkerClickListener { marker ->
             marker.showInfoWindow()
 
             true
         }
     }
+
     private fun enableMyLocation() {
         if (ActivityCompat.checkSelfPermission(
                 requireContext(),
@@ -132,6 +156,7 @@ class MapFragment : Fragment(), OnMapReadyCallback{
         }
         googleMap.isMyLocationEnabled = true
     }
+
     private fun placeMarkerAtCurrentLocation() {
         if (ActivityCompat.checkSelfPermission(
                 requireContext(),
@@ -177,6 +202,7 @@ class MapFragment : Fragment(), OnMapReadyCallback{
             }
         }
     }
+
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1
         private const val DEFAULT_ZOOM = 15f

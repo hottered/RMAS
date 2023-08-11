@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- res/layout/fragment_checkbox_dropdown.xml -->
-<RelativeLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -14,10 +15,56 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="16dp"
         android:background="@android:drawable/editbox_background"
         android:drawableRight="@android:drawable/arrow_down_float"
         android:drawablePadding="16dp"
-        android:hint="Select Language"
-        android:padding="12dp" />
+        android:hint="Filter by users"
+        android:padding="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-</RelativeLayout>
+    <TextView
+        android:id="@+id/filterBy_specie_textView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="60dp"
+        android:background="@android:drawable/editbox_background"
+        android:drawableRight="@android:drawable/arrow_down_float"
+        android:drawablePadding="16dp"
+        android:hint="Filter by specie"
+        android:padding="12dp"
+        app:layout_constraintEnd_toEndOf="@+id/textView"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/textView"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <Button
+        android:id="@+id/apply_filters_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
+        android:text="Apply filters"
+        app:layout_constraintEnd_toEndOf="@+id/filterBy_daterange"
+        app:layout_constraintStart_toStartOf="@+id/filterBy_daterange"
+        app:layout_constraintTop_toBottomOf="@+id/filterBy_daterange" />
+
+    <TextView
+        android:id="@+id/filterBy_daterange"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="60dp"
+        android:background="@android:drawable/editbox_background"
+        android:drawableRight="@android:drawable/arrow_down_float"
+        android:drawablePadding="16dp"
+        android:hint="Filter by date"
+        android:padding="12dp"
+        app:layout_constraintEnd_toEndOf="@+id/filterBy_specie_textView"
+        app:layout_constraintStart_toStartOf="@+id/filterBy_specie_textView"
+        app:layout_constraintTop_toBottomOf="@+id/filterBy_specie_textView" />
+</androidx.constraintlayout.widget.ConstraintLayout>
