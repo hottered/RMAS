@@ -19,7 +19,7 @@ import com.google.firebase.storage.StorageReference
 import de.hdodenhof.circleimageview.CircleImageView
 import java.io.File
 
-class HomePage : AppCompatActivity() {
+class HomePage : AppCompatActivity()  {
 
     private lateinit var binding: ActivityHomePageBinding
     private lateinit var firebaseAuth: FirebaseAuth
@@ -47,7 +47,7 @@ class HomePage : AppCompatActivity() {
         databaseReference = FirebaseDatabase.getInstance().getReference("users");
 
 
-        val drawerLayout = binding.drawerLayout;
+        drawerLayout = binding.drawerLayout;
         val navView = binding.navigationView;
 
         val headerView = navView.getHeaderView(0);
@@ -132,13 +132,13 @@ class HomePage : AppCompatActivity() {
                 Toast.makeText(this, "Something went wrong with picture", Toast.LENGTH_SHORT).show()
             }
     }
-//    override fun onBackPressed() {
-//        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-//            drawerLayout.closeDrawer(GravityCompat.START)
-//        } else {
-//            onBackPressedDispatcher.onBackPressed()
-//        }
-//    }
+    override fun onBackPressed() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START)
+        } else {
+            onBackPressedDispatcher.onBackPressed()
+        }
+    }
 
     private fun logoutUser() {
         firebaseAuth.signOut();
@@ -154,4 +154,6 @@ class HomePage : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
+
+
 }
