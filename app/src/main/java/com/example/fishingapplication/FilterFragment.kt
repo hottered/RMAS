@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.util.Pair
 import androidx.fragment.app.Fragment
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -19,6 +20,10 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import java.io.BufferedReader
 import java.io.InputStreamReader
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
+import java.util.TimeZone
 
 
 class FilterFragment : Fragment() {
@@ -245,36 +250,45 @@ class FilterFragment : Fragment() {
     private fun showDateRangePicker() {
         val datePicker = MaterialDatePicker.Builder
             .dateRangePicker()
-//            .setTheme(R.style.ThemeMaterialCalendar)
+            .setTheme(R.style.ThemeMaterialCalendar)
             .setTitleText("Selectm a date range")
             .setSelection(Pair(null,null))
             .build()
         datePicker.show(requireActivity().supportFragmentManager, "DatePicker")
 
-        // Setting up the event for when ok is clicked
-//        datePicker.addOnPositiveButtonClickListener {
-//            Toast.makeText(
-//                requireContext(),
-//                "${datePicker.headerText} is selected",
-//                Toast.LENGTH_LONG
-//            ).show()
-//        }
-//
-//        // Setting up the event for when cancelled is clicked
-//        datePicker.addOnNegativeButtonClickListener {
-//            Toast.makeText(
-//                requireContext(),
-//                "${datePicker.headerText} is cancelled",
-//                Toast.LENGTH_LONG
-//            ).show()
-//        }
-//
-//        // Setting up the event for when back button is pressed
-//        datePicker.addOnCancelListener {
-//            Toast.makeText(requireContext(), "Date Picker Cancelled", Toast.LENGTH_LONG).show()
-//        }
+//         Setting up the event for when ok is clicked
+        datePicker.addOnPositiveButtonClickListener {
+            dateTextHolder.text = (convertTimeToDate(it.first) + " " + convertTimeToDate(it.second))
+            Toast.makeText(
+                requireContext(),
+                "${datePicker.headerText} is selected",
+                Toast.LENGTH_LONG
+            ).show()
+        }
+
+        // Setting up the event for when cancelled is clicked
+        datePicker.addOnNegativeButtonClickListener {
+            datePicker.dismiss()
+            Toast.makeText(
+                requireContext(),
+                "${datePicker.headerText} is cancelled",
+                Toast.LENGTH_LONG
+            ).show()
+        }
+
+        // Setting up the event for when back button is pressed
+        datePicker.addOnCancelListener {
+            datePicker.dismiss()
+            Toast.makeText(requireContext(), "Date Picker Cancelled", Toast.LENGTH_LONG).show()
+        }
     }
 
+    private fun convertTimeToDate(time : Long) : String{
+        val utc = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+        utc.timeInMillis = time
+        val format = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        return format.format(utc.time);
+    }
     private fun fetchSpeciesFromRaw(callback: (ArrayList<String>) -> Unit) {
         val speciesList: ArrayList<String> = ArrayList()
 
