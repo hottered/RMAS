@@ -41,6 +41,10 @@ class FilterFragment : Fragment() {
     private var newListSpecie: ArrayList<Int> = ArrayList()
     private var selectedSpecieNamesList: ArrayList<String> = ArrayList()
 
+//    private var selectedDatePair: Pair<Long, Long>? = null
+    private var dateStart : Long = 0
+    private var dateEnd : Long = 0
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -61,6 +65,10 @@ class FilterFragment : Fragment() {
             bundle.putStringArrayList("selectedUsers", selectedUserNamesList)
             bundle.putStringArrayList("selectedSpecies", selectedSpecieNamesList)
 
+            bundle.putLong("dateStart", dateStart)
+            bundle.putLong("dateEnd",dateEnd)
+
+
             // Create a new instance of the MapFragment
             val mapFragment = MapFragment()
             mapFragment.arguments = bundle
@@ -77,7 +85,7 @@ class FilterFragment : Fragment() {
         }
 
         dateTextHolder.setOnClickListener {
-            Log.d("Clicked on date","Error here")
+            Log.d("Clicked on date", "Error here")
             showDateRangePicker()
         }
 
@@ -252,12 +260,16 @@ class FilterFragment : Fragment() {
             .dateRangePicker()
             .setTheme(R.style.ThemeMaterialCalendar)
             .setTitleText("Selectm a date range")
-            .setSelection(Pair(null,null))
+            .setSelection(Pair(null, null))
             .build()
         datePicker.show(requireActivity().supportFragmentManager, "DatePicker")
 
 //         Setting up the event for when ok is clicked
         datePicker.addOnPositiveButtonClickListener {
+
+            dateStart = it.first
+            dateEnd = it.second
+//            selectedDatePair = Pair(it.first, it.second)
             dateTextHolder.text = (convertTimeToDate(it.first) + " " + convertTimeToDate(it.second))
             Toast.makeText(
                 requireContext(),
@@ -283,12 +295,13 @@ class FilterFragment : Fragment() {
         }
     }
 
-    private fun convertTimeToDate(time : Long) : String{
+    private fun convertTimeToDate(time: Long): String {
         val utc = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
         utc.timeInMillis = time
         val format = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
         return format.format(utc.time);
     }
+
     private fun fetchSpeciesFromRaw(callback: (ArrayList<String>) -> Unit) {
         val speciesList: ArrayList<String> = ArrayList()
 

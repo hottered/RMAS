@@ -38,6 +38,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var selectedSpecies: ArrayList<String>
     private lateinit var selectedUsers: ArrayList<String>
 
+    private var dateStart : Long = 0L
+    private var dateEnd : Long = 0L
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -54,9 +57,13 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
         selectedUsers = arguments?.getStringArrayList("selectedUsers") ?: ArrayList()
         selectedSpecies = arguments?.getStringArrayList("selectedSpecies") ?: ArrayList()
+        dateStart = arguments?.getLong("dateStart") ?: 0L
+        dateEnd = arguments?.getLong("dateEnd") ?: 0L
 
         Log.d("FiltersFromMap", selectedSpecies.toString())
         Log.d("FiltersFromMap", selectedUsers.toString())
+        Log.d("FiltersFromMap",dateStart.toString())
+        Log.d("FiltersFromMap",dateEnd.toString())
 
         btnPlaceMarker.setOnClickListener {
             placeMarkerAtCurrentLocation()
@@ -97,6 +104,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                         if (
                             (selectedSpecies.isNullOrEmpty() || selectedSpecies.contains(markerData.commonSpecie))
                             && (selectedUsers.isNullOrEmpty() || selectedUsers.contains(markerData.user?.username))
+                            && (dateStart==0L || dateEnd==0L || ((markerData.createdAtUtc!! > dateStart) && (markerData.createdAtUtc!! < dateEnd)))
                             )
                         {
                             val markerLatLng = LatLng(markerData.latitude, markerData.longitude)
