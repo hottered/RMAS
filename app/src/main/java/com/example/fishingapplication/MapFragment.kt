@@ -1,6 +1,8 @@
 package com.example.fishingapplication
 
 import android.Manifest
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
@@ -9,11 +11,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.SearchView
 import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -35,11 +39,16 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var btnPlaceMarker: FloatingActionButton
     private lateinit var btnFilters: Button
 
+
     private lateinit var selectedSpecies: ArrayList<String>
     private lateinit var selectedUsers: ArrayList<String>
 
-    private var dateStart : Long = 0L
-    private var dateEnd : Long = 0L
+    private lateinit var markerList: ArrayList<Marker>
+
+    private var dateStart: Long = 0L
+    private var dateEnd: Long = 0L
+
+    private lateinit var searchView: SearchView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -52,8 +61,11 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         mapView.onResume()
         mapView.getMapAsync(this)
 
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
+
         btnPlaceMarker = view.findViewById(R.id.btn_place_marker)
         btnFilters = view.findViewById(R.id.button_filters_map)
+        searchView = view.findViewById(R.id.searchView)
 
         selectedUsers = arguments?.getStringArrayList("selectedUsers") ?: ArrayList()
         selectedSpecies = arguments?.getStringArrayList("selectedSpecies") ?: ArrayList()
@@ -62,12 +74,29 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
         Log.d("FiltersFromMap", selectedSpecies.toString())
         Log.d("FiltersFromMap", selectedUsers.toString())
-        Log.d("FiltersFromMap",dateStart.toString())
-        Log.d("FiltersFromMap",dateEnd.toString())
+        Log.d("FiltersFromMap", dateStart.toString())
+        Log.d("FiltersFromMap", dateEnd.toString())
+
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                if (!query.isNullOrEmpty()) {
+                    Log.d("MarkerSearch", query)
+                    Log.d("marker1is", markerList[0].title.toString())
+                    searchAndFocusMarkerByTitle(query)
+                }
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                return false
+
+            }
+        })
 
         btnPlaceMarker.setOnClickListener {
             placeMarkerAtCurrentLocation()
         }
+
         btnFilters.setOnClickListener {
             val filtersFragment = FilterFragment()
             parentFragmentManager.beginTransaction()
@@ -76,12 +105,12 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 .commit()
         }
 
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
         return view
     }
 
     override fun onMapReady(map: GoogleMap) {
+
         googleMap = map
         enableMyLocation()
         fetchMarkersFromFirebase()
@@ -89,7 +118,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun fetchMarkersFromFirebase() {
-        Log.d("FetchMarkers is called", "I'm called again")
+
+        markerList = ArrayList()
+
+        Log.d("MapFragmentGledam", "fetchMarkersHere")
 
         val databaseReference = FirebaseDatabase.getInstance().getReference("markers")
 
@@ -99,14 +131,12 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
                     val markerData = markerSnapshot.getValue(MarkerData::class.java)
 
-                    if (markerData != null && markerData.latitude != null && markerData.longitude != null)
-                    {
+                    if (markerData != null && markerData.latitude != null && markerData.longitude != null) {
                         if (
                             (selectedSpecies.isNullOrEmpty() || selectedSpecies.contains(markerData.commonSpecie))
                             && (selectedUsers.isNullOrEmpty() || selectedUsers.contains(markerData.user?.username))
-                            && (dateStart==0L || dateEnd==0L || ((markerData.createdAtUtc!! > dateStart) && (markerData.createdAtUtc!! < dateEnd)))
-                            )
-                        {
+                            && (dateStart == 0L || dateEnd == 0L || ((markerData.createdAtUtc!! > dateStart) && (markerData.createdAtUtc!! < dateEnd)))
+                        ) {
                             val markerLatLng = LatLng(markerData.latitude, markerData.longitude)
                             val marker = googleMap.addMarker(
                                 MarkerOptions()
@@ -114,6 +144,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                                     .title(markerData.title)
                             )
                             marker?.snippet = "Rating: ${markerData.rating ?: "Not rated yet"}"
+                            if (marker != null) {
+                                markerList.add(marker)
+                            }
                         }
                     }
                 }
@@ -152,7 +185,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         if (ActivityCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
+            )
+            != PackageManager.PERMISSION_GRANTED
         ) {
             // Request location permission
             ActivityCompat.requestPermissions(
@@ -160,9 +194,26 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                 LOCATION_PERMISSION_REQUEST_CODE
             )
+
             return
         }
         googleMap.isMyLocationEnabled = true
+
+
+        fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+            if (location != null) {
+                val currentLatLng = LatLng(location.latitude, location.longitude)
+
+                // Open AddLocationFragment and pass the current location as an argument
+                googleMap.moveCamera(
+                    CameraUpdateFactory.newLatLngZoom(
+                        currentLatLng,
+                        DEFAULT_ZOOM
+                    )
+                )
+            }
+
+        }
     }
 
     private fun placeMarkerAtCurrentLocation() {
@@ -179,20 +230,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             )
             return
         }
-        // If permission is granted, add a marker at the current location
 
-//        fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
-//            if (location != null) {
-//                val currentLatLng = LatLng(location.latitude, location.longitude)
-//                googleMap.addMarker(
-//                    MarkerOptions()
-//                        .position(currentLatLng)
-//                        .title("Current Location"))
-//                googleMap.moveCamera(
-//                    CameraUpdateFactory
-//                        .newLatLngZoom(currentLatLng, DEFAULT_ZOOM))
-//            }
-//        }
+        googleMap.isMyLocationEnabled = true
+
         fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
             if (location != null) {
                 val currentLatLng = LatLng(location.latitude, location.longitude)
@@ -209,6 +249,35 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     .commit()
             }
         }
+    }
+
+    private fun searchAndFocusMarkerByTitle(title: String) {
+        var flag = 0
+        for (marker in markerList) {
+            if (marker.title == title) {
+                val markerPosition = marker.position
+                googleMap.moveCamera(
+                    CameraUpdateFactory.newLatLngZoom(
+                        markerPosition,
+                        DEFAULT_ZOOM
+                    )
+                )
+                marker.showInfoWindow()
+                flag=1
+                break
+            }
+        }
+        if(flag == 0){
+            val alertDialogBuilder = AlertDialog.Builder(requireContext())
+            alertDialogBuilder.setMessage("There is no location with a title ${title}")
+            alertDialogBuilder.setPositiveButton("OK") { dialogInterface: DialogInterface, _: Int ->
+                dialogInterface.dismiss()
+            }
+
+            val alertDialog: AlertDialog = alertDialogBuilder.create()
+            alertDialog.show()
+        }
+
     }
 
     companion object {
