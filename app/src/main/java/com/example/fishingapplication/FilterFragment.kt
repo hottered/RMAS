@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.util.Pair
@@ -25,13 +26,13 @@ import java.util.Calendar
 import java.util.Locale
 import java.util.TimeZone
 
-
 class FilterFragment : Fragment() {
 
     private lateinit var btnApplyFilters: Button
     private lateinit var usersTextHolder: TextView
     private lateinit var specieTextHolder: TextView
     private lateinit var dateTextHolder: TextView
+    private lateinit var filterByRadius : EditText
 
     private var selectedUser: BooleanArray = booleanArrayOf()
     private var newListUsers: ArrayList<Int> = ArrayList()
@@ -41,9 +42,10 @@ class FilterFragment : Fragment() {
     private var newListSpecie: ArrayList<Int> = ArrayList()
     private var selectedSpecieNamesList: ArrayList<String> = ArrayList()
 
-//    private var selectedDatePair: Pair<Long, Long>? = null
     private var dateStart : Long = 0
     private var dateEnd : Long = 0
+
+    private var radiusNumber : Double = 0.0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -55,11 +57,21 @@ class FilterFragment : Fragment() {
         btnApplyFilters = view.findViewById(R.id.apply_filters_button);
         specieTextHolder = view.findViewById(R.id.filterBy_specie_textView)
         dateTextHolder = view.findViewById(R.id.filterBy_daterange)
+        filterByRadius = view.findViewById(R.id.filterBy_radius)
 
 
         btnApplyFilters.setOnClickListener {
             Log.d("SelectedUsers", selectedUserNamesList.toString())
             Log.d("SelectedSpecies", selectedSpecieNamesList.toString())
+
+            val textRadiusNumber = filterByRadius.text.toString()
+            if(textRadiusNumber.isNotEmpty()){
+                radiusNumber = textRadiusNumber.toDouble()
+            }
+            else
+            {
+                radiusNumber = 0.0
+            }
 
             val bundle = Bundle()
             bundle.putStringArrayList("selectedUsers", selectedUserNamesList)
@@ -68,6 +80,7 @@ class FilterFragment : Fragment() {
             bundle.putLong("dateStart", dateStart)
             bundle.putLong("dateEnd",dateEnd)
 
+            bundle.putDouble("filterRadius",radiusNumber)
 
             // Create a new instance of the MapFragment
             val mapFragment = MapFragment()
@@ -96,13 +109,10 @@ class FilterFragment : Fragment() {
             usersTextHolder.setOnClickListener(View.OnClickListener {
                 // Initialize alert dialog
                 val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
-
                 // set title
                 builder.setTitle("Select user")
-
                 // set dialog non cancelable
                 builder.setCancelable(false)
-
                 builder.setMultiChoiceItems(
                     usernameList.toTypedArray(),
                     selectedUser,
@@ -294,14 +304,12 @@ class FilterFragment : Fragment() {
             Toast.makeText(requireContext(), "Date Picker Cancelled", Toast.LENGTH_LONG).show()
         }
     }
-
     private fun convertTimeToDate(time: Long): String {
         val utc = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
         utc.timeInMillis = time
         val format = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
         return format.format(utc.time);
     }
-
     private fun fetchSpeciesFromRaw(callback: (ArrayList<String>) -> Unit) {
         val speciesList: ArrayList<String> = ArrayList()
 
@@ -324,7 +332,6 @@ class FilterFragment : Fragment() {
             callback(ArrayList()) // Empty list if there's an error
         }
     }
-
     private fun fetchUsernamesFromFirebase(callback: (ArrayList<String>) -> Unit) {
         val database: FirebaseDatabase = FirebaseDatabase.getInstance()
         val usersReference: DatabaseReference = database.getReference("users")

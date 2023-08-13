@@ -1,9 +1,11 @@
 package com.example.fishingapplication
 
+//import kotlinx.coroutines.tasks.await
 import android.Manifest
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
@@ -21,6 +23,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
@@ -48,6 +51,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private var dateStart: Long = 0L
     private var dateEnd: Long = 0L
 
+    private var radiusFilter: Double = 0.0
+
     private lateinit var searchView: SearchView
 
     override fun onCreateView(
@@ -72,10 +77,15 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         dateStart = arguments?.getLong("dateStart") ?: 0L
         dateEnd = arguments?.getLong("dateEnd") ?: 0L
 
+
+        radiusFilter = arguments?.getDouble("filterRadius") ?: 0.0
+
         Log.d("FiltersFromMap", selectedSpecies.toString())
         Log.d("FiltersFromMap", selectedUsers.toString())
         Log.d("FiltersFromMap", dateStart.toString())
         Log.d("FiltersFromMap", dateEnd.toString())
+//        Log.d("FiltersFromMap", radiusFilter.toString())
+
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -119,66 +129,102 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     private fun fetchMarkersFromFirebase() {
 
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
         markerList = ArrayList()
 
         Log.d("MapFragmentGledam", "fetchMarkersHere")
 
         val databaseReference = FirebaseDatabase.getInstance().getReference("markers")
 
-        databaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                for (markerSnapshot in snapshot.children) {
 
-                    val markerData = markerSnapshot.getValue(MarkerData::class.java)
+        fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+            if (location != null) {
+                var currentLatLng = LatLng(location.latitude, location.longitude)
 
-                    if (markerData != null && markerData.latitude != null && markerData.longitude != null) {
-                        if (
-                            (selectedSpecies.isNullOrEmpty() || selectedSpecies.contains(markerData.commonSpecie))
-                            && (selectedUsers.isNullOrEmpty() || selectedUsers.contains(markerData.user?.username))
-                            && (dateStart == 0L || dateEnd == 0L || ((markerData.createdAtUtc!! > dateStart) && (markerData.createdAtUtc!! < dateEnd)))
-                        ) {
-                            val markerLatLng = LatLng(markerData.latitude, markerData.longitude)
-                            val marker = googleMap.addMarker(
-                                MarkerOptions()
-                                    .position(markerLatLng)
-                                    .title(markerData.title)
-                            )
-                            marker?.snippet = "Rating: ${markerData.rating ?: "Not rated yet"}"
-                            if (marker != null) {
-                                markerList.add(marker)
+                databaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        for (markerSnapshot in snapshot.children) {
+
+                            val markerData = markerSnapshot.getValue(MarkerData::class.java)
+
+                            if (markerData != null && markerData.latitude != null && markerData.longitude != null) {
+                                val markerLatLng = LatLng(markerData.latitude, markerData.longitude)
+                                if (
+                                    (selectedSpecies.isNullOrEmpty() || selectedSpecies.contains(
+                                        markerData.commonSpecie
+                                    ))
+                                    && (selectedUsers.isNullOrEmpty() || selectedUsers.contains(
+                                        markerData.user?.username
+                                    ))
+                                    && (dateStart == 0L || dateEnd == 0L || ((markerData.createdAtUtc!! > dateStart) && (markerData.createdAtUtc!! < dateEnd)))
+                                    && (radiusFilter == 0.0 || isMarkerInRadiusInKilometers(
+                                        markerLatLng,
+                                        currentLatLng,
+                                        radiusFilter
+                                    ))
+                                ) {
+                                    val marker = googleMap.addMarker(
+                                        MarkerOptions()
+                                            .position(markerLatLng)
+                                            .title(markerData.title)
+                                    )
+                                    marker?.snippet =
+                                        "Rating: ${markerData.rating ?: "Not rated yet"}"
+                                    if (marker != null) {
+                                        markerList.add(marker)
+                                    }
+                                }
                             }
                         }
                     }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.e("MapFragment", "Failed to fetch markers: ${error.message}")
+                    }
+                })
+
+                googleMap.setInfoWindowAdapter(object : GoogleMap.InfoWindowAdapter {
+                    override fun getInfoContents(marker: Marker): View {
+                        val view = layoutInflater.inflate(R.layout.marker_info_contents, null)
+                        val titleView = view.findViewById<TextView>(R.id.marker_title)
+                        val ratingView = view.findViewById<TextView>(R.id.marker_rating)
+
+                        titleView.text = marker.title
+                        ratingView.text = marker.snippet
+
+                        return view;
+                    }
+
+                    override fun getInfoWindow(marker: Marker): View? {
+                        return null
+                    }
+
+                })
+                googleMap.setOnMarkerClickListener { marker ->
+                    marker.showInfoWindow()
+
+                    true
                 }
+                googleMap.addCircle(
+                    CircleOptions()
+                        .center(currentLatLng)
+                        .radius(radiusFilter * 1000)
+                        .strokeWidth(2f)
+                        .strokeColor(Color.BLUE)
+                        .fillColor(Color.parseColor("#500084d3"))
+                )
+
             }
 
-            override fun onCancelled(error: DatabaseError) {
-                Log.e("MapFragment", "Failed to fetch markers: ${error.message}")
-            }
-        })
-
-        googleMap.setInfoWindowAdapter(object : GoogleMap.InfoWindowAdapter {
-            override fun getInfoContents(marker: Marker): View {
-                val view = layoutInflater.inflate(R.layout.marker_info_contents, null)
-                val titleView = view.findViewById<TextView>(R.id.marker_title)
-                val ratingView = view.findViewById<TextView>(R.id.marker_rating)
-
-                titleView.text = marker.title
-                ratingView.text = marker.snippet
-
-                return view;
-            }
-
-            override fun getInfoWindow(marker: Marker): View? {
-                return null
-            }
-
-        })
-        googleMap.setOnMarkerClickListener { marker ->
-            marker.showInfoWindow()
-
-            true
         }
+
+
     }
 
     private fun enableMyLocation() {
@@ -211,6 +257,14 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                         DEFAULT_ZOOM
                     )
                 )
+//                googleMap.addCircle(
+//                    CircleOptions()
+//                    .center(currentLatLng)
+//                    .radius(50.0)
+//                    .strokeWidth(2f)
+//                    .strokeColor(Color.BLUE)
+//                    .fillColor(Color.parseColor("#500084d3")))
+
             }
 
         }
@@ -263,11 +317,11 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     )
                 )
                 marker.showInfoWindow()
-                flag=1
+                flag = 1
                 break
             }
         }
-        if(flag == 0){
+        if (flag == 0) {
             val alertDialogBuilder = AlertDialog.Builder(requireContext())
             alertDialogBuilder.setMessage("There is no location with a title ${title}")
             alertDialogBuilder.setPositiveButton("OK") { dialogInterface: DialogInterface, _: Int ->
@@ -278,6 +332,28 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             alertDialog.show()
         }
 
+    }
+
+    private fun calculateDistanceInKilometers(latLng1: LatLng, latLng2: LatLng): Double {
+        val results = FloatArray(1)
+        Location.distanceBetween(
+            latLng1.latitude,
+            latLng1.longitude,
+            latLng2.latitude,
+            latLng2.longitude,
+            results
+        )
+        val distanceInMeters = results[0]
+        return distanceInMeters / 1000.0 // Convert meters to kilometers
+    }
+
+    private fun isMarkerInRadiusInKilometers(
+        markerLatLng: LatLng,
+        userLatLng: LatLng,
+        radiusKm: Double
+    ): Boolean {
+        val distanceKm = calculateDistanceInKilometers(markerLatLng, userLatLng)
+        return distanceKm <= radiusKm
     }
 
     companion object {

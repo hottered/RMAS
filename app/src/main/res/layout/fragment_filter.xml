@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- res/layout/fragment_checkbox_dropdown.xml -->
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -47,11 +46,12 @@
         android:id="@+id/apply_filters_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="64dp"
         android:text="Apply filters"
-        app:layout_constraintEnd_toEndOf="@+id/filterBy_daterange"
-        app:layout_constraintStart_toStartOf="@+id/filterBy_daterange"
-        app:layout_constraintTop_toBottomOf="@+id/filterBy_daterange" />
+        app:layout_constraintEnd_toEndOf="@+id/filterBy_radius"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="@+id/filterBy_radius"
+        app:layout_constraintTop_toBottomOf="@+id/filterBy_radius" />
 
     <TextView
         android:id="@+id/filterBy_daterange"
@@ -67,4 +67,21 @@
         app:layout_constraintEnd_toEndOf="@+id/filterBy_specie_textView"
         app:layout_constraintStart_toStartOf="@+id/filterBy_specie_textView"
         app:layout_constraintTop_toBottomOf="@+id/filterBy_specie_textView" />
+
+    <EditText
+        android:id="@+id/filterBy_radius"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="60dp"
+        android:background="@android:drawable/editbox_background"
+        android:drawableRight="@android:drawable/arrow_down_float"
+        android:drawablePadding="16dp"
+        android:hint="Filter by radius"
+        android:inputType="number|numberDecimal"
+        android:padding="12dp"
+        app:layout_constraintEnd_toEndOf="@+id/filterBy_daterange"
+        app:layout_constraintStart_toStartOf="@+id/filterBy_daterange"
+        app:layout_constraintTop_toBottomOf="@+id/filterBy_daterange" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

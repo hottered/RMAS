@@ -65,4 +65,8 @@ dependencies {
 
     //circleImageView
     implementation ("de.hdodenhof:circleimageview:3.1.0")
+
+    //coroutine
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:x.y.z")
+
 }
