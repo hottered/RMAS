@@ -66,7 +66,7 @@ dependencies {
     //circleImageView
     implementation ("de.hdodenhof:circleimageview:3.1.0")
 
-    //coroutine
-    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:x.y.z")
+    //glide for pictures
+    implementation ("com.github.bumptech.glide:glide:4.15.1")
 
 }

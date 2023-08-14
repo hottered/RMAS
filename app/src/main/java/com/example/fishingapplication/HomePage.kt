@@ -80,6 +80,9 @@ class HomePage : AppCompatActivity()  {
                 R.id.nav_map -> supportFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container, MapFragment()).commit()
 
+                R.id.nav_list -> supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container,AllLocationsFragment()).commit()
+
                 R.id.nav_logout -> logoutUser();
             }
             drawerLayout.closeDrawer(GravityCompat.START);
