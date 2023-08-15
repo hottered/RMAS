@@ -13,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.RatingBar
 import android.widget.SearchView
 import android.widget.TextView
 import androidx.core.app.ActivityCompat
@@ -32,6 +33,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import kotlin.math.floor
 
 class MapFragment : Fragment(), OnMapReadyCallback {
 
@@ -173,10 +175,11 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                                         MarkerOptions()
                                             .position(markerLatLng)
                                             .title(markerData.title)
-
                                     )
-                                    marker?.snippet =
-                                        "Rating: ${markerData.rating ?: "Not rated yet"}"
+//                                    marker?.tag = markerData.rating
+//                                    marker?.snippet =
+//                                        "Rating: ${markerData.rating ?: "Not rated yet"}"
+                                    marker?.snippet = markerData.rating.toString()
                                     if (marker != null) {
                                         markerList.add(marker)
                                     }
@@ -195,10 +198,15 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                         val view = layoutInflater.inflate(R.layout.marker_info_contents, null)
                         val titleView = view.findViewById<TextView>(R.id.marker_title)
                         val ratingView = view.findViewById<TextView>(R.id.marker_rating)
+                        val ratingBar = view.findViewById<RatingBar>(R.id.marker_rating_stars)
 
+
+                        Log.d("ZaokruzioSam",
+                            floor(marker.snippet?.toDouble() ?: 0.0).toInt().toString()
+                        )
                         titleView.text = marker.title
                         ratingView.text = marker.snippet
-
+                        ratingBar.rating = floor(marker.snippet?.toDouble() ?: 0.0).toFloat()
                         return view;
                     }
 
@@ -221,9 +229,18 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     args.putDouble("locationFragmentLongitude", marker.position.longitude)
                     locationFragment.arguments = args
 
-                    parentFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, locationFragment)
-                        .addToBackStack(null)
+//                    parentFragmentManager.beginTransaction()
+//                        .replace(R.id.fragment_container, locationFragment)
+//                        .addToBackStack(null)
+//                        .commit()
+
+                    val fragmentManager = requireActivity().supportFragmentManager
+                    fragmentManager.beginTransaction()
+                        .replace(
+                            R.id.fragment_container,
+                            locationFragment
+                        ) // R.id.fragment_container should be the ID of the container where you want to display the MapFragment
+                        .addToBackStack(null) // Add this transaction to the back stack
                         .commit()
                 }
                 googleMap.addCircle(

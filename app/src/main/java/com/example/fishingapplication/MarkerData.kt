@@ -6,7 +6,7 @@ data class MarkerData(
     val description : String?=null,
     val latitude: Double? = null,
     val longitude: Double? = null,
-    val rating: Double?=null,
+    val rating: Double?=0.0,
     val numOfUsersRated : Double?=0.0,
     val sumOfRatings : Double?=0.0,
     val commonSpecie : String?=null,

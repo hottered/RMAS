@@ -1,5 +1,6 @@
 package com.example.fishingapplication
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,9 +10,9 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -39,6 +40,17 @@ class LocationFragment : Fragment() {
 
     private var latitude: Double? = 0.0
     private var longitude: Double? = 0.0
+
+    private lateinit var glide: RequestManager
+
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        // Perform context-related operations here
+       glide = Glide.with(this)
+        // ... Continue with the rest of your code ...
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -82,23 +94,21 @@ class LocationFragment : Fragment() {
             } else {
                 ratingLocation.text = markerData.rating.toString()
             }
-            Glide.with(requireContext())
-                .load(markerData.imageMarker)
+            glide.load(markerData.imageMarker)
                 .into(imageLocation)
 
         }
-
         submitButton.setOnClickListener {
             Log.d("RatingBarChanged", ratingBar.rating.toString())
 
             numOfUsersWhoRated = numOfUsersWhoRated!!.plus(1.0)
             sumOfAllUsers = sumOfAllUsers!!.plus(ratingBar.rating.toDouble())
-            updateMarkerUsersAndNumber(markerKey, sumOfAllUsers!!,numOfUsersWhoRated!!)
+            updateMarkerUsersAndNumber(markerKey, sumOfAllUsers!!, numOfUsersWhoRated!!)
 //            updateMarkerRating(markerKey, ratingBar.rating.toDouble())
-            val newRating = String.format("%.2f",sumOfAllUsers!!.div(numOfUsersWhoRated!!)).toDouble()
-            updateMarkerRating(markerKey,newRating)
+            val newRating =
+                String.format("%.2f", sumOfAllUsers!!.div(numOfUsersWhoRated!!)).toDouble()
+            updateMarkerRating(markerKey, newRating)
         }
-
 
         return view
     }
@@ -139,38 +149,46 @@ class LocationFragment : Fragment() {
         }
     }
 
-    private fun updateMarkerUsersAndNumber(markerId: String, newSum: Double,newCount : Double) {
+    private fun updateMarkerUsersAndNumber(markerId: String, newSum: Double, newCount: Double) {
         val numOfUsersRated = databaseReference.child(markerId).child("numOfUsersRated")
         val sumOfUsers = databaseReference.child(markerId).child("sumOfRatings")
         numOfUsersRated.setValue(newCount).addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                Toast.makeText(requireContext(), "numOfUsersRated updated successfully", Toast.LENGTH_SHORT)
-                    .show()
+                Log.d("here", "success")
+//                Toast.makeText(requireContext(), "numOfUsersRated updated successfully", Toast.LENGTH_SHORT)
+//                    .show()
             } else {
-                Toast.makeText(requireContext(), "numOfUsersRated to update rating", Toast.LENGTH_SHORT)
-                    .show()
+//                Toast.makeText(requireContext(), "numOfUsersRated to update rating", Toast.LENGTH_SHORT)
+//                    .show()
             }
         }
         sumOfUsers.setValue(newSum).addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                Toast.makeText(requireContext(), "sumOfUsers updated successfully", Toast.LENGTH_SHORT)
-                    .show()
+//                Toast.makeText(requireContext(), "sumOfUsers updated successfully", Toast.LENGTH_SHORT)
+//                    .show()
+                Log.d("here", "success")
+
             } else {
-                Toast.makeText(requireContext(), "sumOfUsers to update rating", Toast.LENGTH_SHORT)
-                    .show()
+//                Toast.makeText(requireContext(), "sumOfUsers to update rating", Toast.LENGTH_SHORT)
+//                    .show()
             }
         }
     }
+
     private fun updateMarkerRating(markerId: String, newRating: Double) {
         val ratingRef = databaseReference.child(markerId).child("rating")
 
         ratingRef.setValue(newRating).addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                Toast.makeText(requireContext(), "Rating updated successfully", Toast.LENGTH_SHORT)
-                    .show()
+//                Toast.makeText(requireContext(), "Rating updated successfully", Toast.LENGTH_SHORT)
+//                    .show()
+                Log.d("here", "success")
+
+//                parentFragmentManager.popBackStack()
+
             } else {
-                Toast.makeText(requireContext(), "Failed to update rating", Toast.LENGTH_SHORT)
-                    .show()
+//                Toast.makeText(requireContext(), "Failed to update rating", Toast.LENGTH_SHORT)
+//                    .show()
             }
         }
     }
