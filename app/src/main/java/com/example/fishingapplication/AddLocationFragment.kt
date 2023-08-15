@@ -33,7 +33,7 @@ class AddLocationFragment : Fragment() {
 
     private lateinit var markerTitle: EditText
     private lateinit var markerDescription: EditText
-    private lateinit var commonSpecie : String
+    private lateinit var commonSpecie: String
     private lateinit var btnAddLocation: Button
     private lateinit var imageForMarker: ImageView
     private lateinit var selectedImg: Uri
@@ -50,13 +50,26 @@ class AddLocationFragment : Fragment() {
         val spinner = view.findViewById<Spinner>(R.id.spinner)
 
         val speciesNames = loadSpeciesNamesFromResource()
-        val arrayAdapter = ArrayAdapter<String>(requireContext(),android.R.layout.simple_spinner_dropdown_item,speciesNames)
+        val arrayAdapter = ArrayAdapter<String>(
+            requireContext(),
+            android.R.layout.simple_spinner_dropdown_item,
+            speciesNames
+        )
         spinner.adapter = arrayAdapter
 
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
                 commonSpecie = parent?.getItemAtPosition(position).toString()
-                Toast.makeText(requireContext(), "Selected player: $commonSpecie", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    "Selected player: $commonSpecie",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -78,7 +91,6 @@ class AddLocationFragment : Fragment() {
         Log.d("LocationFragment", currentLocation.toString());
         btnAddLocation.setOnClickListener {
             getUserData()
-//            uploadData()
         }
         imageForMarker.setOnClickListener {
             val intent = Intent();
@@ -128,6 +140,7 @@ class AddLocationFragment : Fragment() {
             }
         }
     }
+
     private fun loadSpeciesNamesFromResource(): List<String> {
         val inputStream = resources.openRawResource(R.raw.species)
         val speciesNames = mutableListOf<String>()
@@ -136,6 +149,7 @@ class AddLocationFragment : Fragment() {
         }
         return speciesNames
     }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         val userImage = view?.findViewById<ImageView>(R.id.image_location_marker);
@@ -167,19 +181,7 @@ class AddLocationFragment : Fragment() {
     }
 
     private fun addLocationToFirebase() {
-//        val title = markerTitle.text.toString().trim()
         if (currentLocation != null) {
-
-
-            //first get ImageUlr
-            //second getuserData
-//            val markerData = MarkerData(
-//                title,
-//                currentLocation!!.latitude,
-//                currentLocation!!.longitude,
-//                user = user
-//            )
-
 
             val databaseReference = FirebaseDatabase.getInstance().getReference("markers")
             val newMarkerReference = databaseReference.push()
@@ -187,13 +189,6 @@ class AddLocationFragment : Fragment() {
 
             uploadMarkerImageUrl(newMarkerReference)
 
-//            newMarkerReference.setValue(markerData).addOnSuccessListener {
-//                // Marker data uploaded successfully
-//                navigateBackToMapFragment()
-//            }.addOnFailureListener {
-//                // Failed to upload marker data
-//                Log.e("AddLocationFragment", "Failed to upload marker data: ${it.message}")
-//            }
         }
     }
 

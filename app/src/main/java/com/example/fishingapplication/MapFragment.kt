@@ -173,6 +173,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                                         MarkerOptions()
                                             .position(markerLatLng)
                                             .title(markerData.title)
+
                                     )
                                     marker?.snippet =
                                         "Rating: ${markerData.rating ?: "Not rated yet"}"

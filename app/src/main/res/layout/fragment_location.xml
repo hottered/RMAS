@@ -1,63 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fillViewport="true"
     tools:context=".LocationFragment">
 
-    <ImageView
-        android:id="@+id/image_location_view"
-        android:layout_width="0dp"
-        android:layout_height="300dp"
-        android:scaleType="fitXY"
-        android:src="@mipmap/ic_launcher"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/title_location_view"
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="Title"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/image_location_view"
-        app:layout_constraintStart_toStartOf="@+id/image_location_view"
-        app:layout_constraintTop_toBottomOf="@+id/image_location_view" />
+        android:background="@color/layoutProfile"
+        >
 
-    <TextView
-        android:id="@+id/description_location_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="Description"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="@+id/title_location_view"
-        app:layout_constraintStart_toStartOf="@+id/title_location_view"
-        app:layout_constraintTop_toBottomOf="@+id/title_location_view" />
 
-    <TextView
-        android:id="@+id/rating_location_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="Rating"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="@+id/description_location_view"
-        app:layout_constraintStart_toStartOf="@+id/description_location_view"
-        app:layout_constraintTop_toBottomOf="@+id/description_location_view" />
+        <ImageView
+            android:id="@+id/image_location_view"
+            android:layout_width="0dp"
+            android:layout_height="300dp"
+            android:scaleType="fitXY"
+            android:src="@mipmap/ic_launcher"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/numberofusers_location_View"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="36dp"
-        android:text="Number of users"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="@+id/rating_location_view"
-        app:layout_constraintStart_toStartOf="@+id/rating_location_view"
-        app:layout_constraintTop_toBottomOf="@+id/rating_location_view" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/title_location_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="Title"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/image_location_view"
+            app:layout_constraintStart_toStartOf="@+id/image_location_view"
+            app:layout_constraintTop_toBottomOf="@+id/image_location_view" />
+
+        <TextView
+            android:id="@+id/description_location_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="Description"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="@+id/title_location_view"
+            app:layout_constraintStart_toStartOf="@+id/title_location_view"
+            app:layout_constraintTop_toBottomOf="@+id/title_location_view" />
+
+        <TextView
+            android:id="@+id/rating_location_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="Rating"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="@+id/description_location_view"
+            app:layout_constraintStart_toStartOf="@+id/description_location_view"
+            app:layout_constraintTop_toBottomOf="@+id/description_location_view" />
+
+        <RatingBar
+            android:id="@+id/ratingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:progressBackgroundTint="@color/black"
+            android:stepSize="1"
+            app:layout_constraintEnd_toEndOf="@+id/rating_location_view"
+            app:layout_constraintStart_toStartOf="@+id/rating_location_view"
+            app:layout_constraintTop_toBottomOf="@+id/rating_location_view" />
+
+        <Button
+            android:id="@+id/button_submit_rating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="Submit"
+            app:layout_constraintEnd_toEndOf="@+id/ratingBar"
+            app:layout_constraintStart_toStartOf="@+id/ratingBar"
+            app:layout_constraintTop_toBottomOf="@+id/ratingBar" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
