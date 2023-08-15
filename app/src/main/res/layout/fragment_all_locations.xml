@@ -7,7 +7,6 @@
     android:layout_height="match_parent"
     tools:context=".AllLocationsFragment">
 
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/locationsList"
         android:layout_width="0dp"

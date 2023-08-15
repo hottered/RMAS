@@ -211,6 +211,20 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
                     true
                 }
+                googleMap.setOnInfoWindowClickListener { marker->
+                    Log.d("Kliknuo sam na marker ",marker.position.latitude.toString())
+
+                    val locationFragment = LocationFragment()
+                    val args = Bundle()
+                    args.putDouble("locationFragmentLatitude", marker.position.latitude)
+                    args.putDouble("locationFragmentLongitude", marker.position.longitude)
+                    locationFragment.arguments = args
+
+                    parentFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, locationFragment)
+                        .addToBackStack(null)
+                        .commit()
+                }
                 googleMap.addCircle(
                     CircleOptions()
                         .center(currentLatLng)

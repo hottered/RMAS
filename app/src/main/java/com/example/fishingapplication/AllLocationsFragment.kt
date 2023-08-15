@@ -15,7 +15,6 @@ import com.google.firebase.database.ValueEventListener
 
 class AllLocationsFragment : Fragment() {
 
-
     private lateinit var databaseReference: DatabaseReference
     private lateinit var locationsRecyclerView: RecyclerView
     private lateinit var locationsArrayList: ArrayList<MarkerData>

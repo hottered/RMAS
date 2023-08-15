@@ -11,7 +11,6 @@ import de.hdodenhof.circleimageview.CircleImageView
 class MyAdapter(private val locationsList: ArrayList<MarkerData>) :
     RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
 
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.location_item,
