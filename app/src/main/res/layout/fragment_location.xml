@@ -61,7 +61,7 @@
             app:layout_constraintTop_toBottomOf="@+id/description_location_view" />
 
         <RatingBar
-            android:id="@+id/ratingBar"
+            android:id="@+id/ratingBar_adapter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
@@ -77,8 +77,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:text="Submit"
-            app:layout_constraintEnd_toEndOf="@+id/ratingBar"
-            app:layout_constraintStart_toStartOf="@+id/ratingBar"
-            app:layout_constraintTop_toBottomOf="@+id/ratingBar" />
+            app:layout_constraintEnd_toEndOf="@+id/ratingBar_adapter"
+            app:layout_constraintStart_toStartOf="@+id/ratingBar_adapter"
+            app:layout_constraintTop_toBottomOf="@+id/ratingBar_adapter" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

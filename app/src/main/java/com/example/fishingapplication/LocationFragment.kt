@@ -68,7 +68,7 @@ class LocationFragment : Fragment() {
             view.findViewById<TextView>(R.id.description_location_view)
         ratingLocation = view.findViewById<TextView>(R.id.rating_location_view)
 
-        ratingBar = view.findViewById(R.id.ratingBar)
+        ratingBar = view.findViewById(R.id.ratingBar_adapter)
         submitButton = view.findViewById(R.id.button_submit_rating)
 
         latitude = arguments?.getDouble("locationFragmentLatitude") ?: 0.0

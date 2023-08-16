@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -52,7 +53,29 @@ class AllLocationsFragment : Fragment() {
                         locationsArrayList.add(location!!)
 
                     }
-                    locationsRecyclerView.adapter = MyAdapter(locationsArrayList)
+                    val adapter = MyAdapter(locationsArrayList)
+                    locationsRecyclerView.adapter = adapter
+                    adapter.setOnItemClickListener(object:MyAdapter.onItemClickListener{
+                        override fun onItemClick(position: Int) {
+                            Toast.makeText(requireContext(),"Clicked ${locationsArrayList[position].title}",Toast.LENGTH_SHORT).show()
+
+
+                            val locationFragment = LocationFragment()
+                            val args = Bundle()
+                            args.putDouble("locationFragmentLatitude", locationsArrayList[position].latitude ?: 0.0)
+                            args.putDouble("locationFragmentLongitude", locationsArrayList[position].longitude ?: 0.0)
+                            locationFragment.arguments = args
+                            val fragmentManager = requireActivity().supportFragmentManager
+                            fragmentManager.beginTransaction()
+                                .replace(
+                                    R.id.fragment_container,
+                                    locationFragment
+                                ) // R.id.fragment_container should be the ID of the container where you want to display the MapFragment
+                                .addToBackStack(null) // Add this transaction to the back stack
+                                .commit()
+                        }
+
+                    })
                 }
 
             }
