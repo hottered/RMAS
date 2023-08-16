@@ -35,6 +35,8 @@ class LocationFragment : Fragment() {
     private var numOfUsersWhoRated: Double? = 0.0
 
     private lateinit var markerKey: String
+    private lateinit var ownerOfLocationId: String
+    private var valueToWrite: Double? = 0.0
 
     private lateinit var ratingBar: RatingBar
 
@@ -48,7 +50,7 @@ class LocationFragment : Fragment() {
         super.onAttach(context)
 
         // Perform context-related operations here
-       glide = Glide.with(this)
+        glide = Glide.with(this)
         // ... Continue with the rest of your code ...
     }
 
@@ -74,8 +76,6 @@ class LocationFragment : Fragment() {
         latitude = arguments?.getDouble("locationFragmentLatitude") ?: 0.0
         longitude = arguments?.getDouble("locationFragmentLongitude") ?: 0.0
 
-        Log.d("LocationFragmentHere", latitude.toString())
-        Log.d("LocationFragmentHere", longitude.toString())
         retrieveMarkerInformation(latitude, longitude) { markerData ->
 
             if (markerData.user?.uid == authReference.currentUser?.uid) {
@@ -86,7 +86,6 @@ class LocationFragment : Fragment() {
             sumOfAllUsers = markerData.sumOfRatings
             numOfUsersWhoRated = markerData.numOfUsersRated
 
-            Log.d("markerDataTitlte", markerData.title.toString())
             titleLocation.text = markerData.title.toString()
             descriptionLocation.text = markerData.description.toString()
             if (markerData.rating == null) {
@@ -99,18 +98,60 @@ class LocationFragment : Fragment() {
 
         }
         submitButton.setOnClickListener {
-            Log.d("RatingBarChanged", ratingBar.rating.toString())
 
             numOfUsersWhoRated = numOfUsersWhoRated!!.plus(1.0)
             sumOfAllUsers = sumOfAllUsers!!.plus(ratingBar.rating.toDouble())
             updateMarkerUsersAndNumber(markerKey, sumOfAllUsers!!, numOfUsersWhoRated!!)
-//            updateMarkerRating(markerKey, ratingBar.rating.toDouble())
+
             val newRating =
                 String.format("%.2f", sumOfAllUsers!!.div(numOfUsersWhoRated!!)).toDouble()
             updateMarkerRating(markerKey, newRating)
+
+
+            val newScore = (ratingBar.rating.toDouble() * 10.0)
+            updateUserScore(newScore, ownerOfLocationId)
         }
 
         return view
+    }
+
+    private fun updateUserScore(score: Double, ownerOfLocationId: String) {
+
+        val databaseReferenceForUser =
+            FirebaseDatabase.getInstance().getReference("users/${ownerOfLocationId}")
+
+        returnScoreValueOfUser { valueToWrite ->
+            Log.d("Vratio sam", valueToWrite.toString())
+            val newValue = valueToWrite!!.plus(score)
+            databaseReferenceForUser.child("score").setValue(newValue)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+
+                        Log.d("Upisao sam", newValue.toString())
+
+                    } else {
+                        Log.d("nisam dodo", "jbg")
+                    }
+                }
+        }
+    }
+
+    private fun returnScoreValueOfUser(callback: (Double?) -> Unit) {
+        val userScore =
+            FirebaseDatabase.getInstance().getReference("users/${ownerOfLocationId}/score")
+
+        userScore.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val fieldValue = snapshot.getValue(Double::class.java)
+                valueToWrite = fieldValue
+                callback(valueToWrite)
+                println(fieldValue)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                println("Error getting data: $error")
+            }
+        })
     }
 
     private fun retrieveMarkerInformation(
@@ -126,12 +167,10 @@ class LocationFragment : Fragment() {
                     if (snapshot.exists()) {
                         for (locationsSnapshot in snapshot.children) {
 
-
                             val location = locationsSnapshot.getValue(MarkerData::class.java)
                             if (location?.latitude == latitude && location?.longitude == longitude) {
-                                Log.d("Naso sam te kurvo", "Evo me ")
-                                Log.d("MarkerKays", locationsSnapshot.key.toString())
                                 markerKey = locationsSnapshot.key.toString()
+                                ownerOfLocationId = location.user?.uid.toString()
                                 callback(location)
                             }
 
@@ -155,22 +194,15 @@ class LocationFragment : Fragment() {
         numOfUsersRated.setValue(newCount).addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 Log.d("here", "success")
-//                Toast.makeText(requireContext(), "numOfUsersRated updated successfully", Toast.LENGTH_SHORT)
-//                    .show()
             } else {
-//                Toast.makeText(requireContext(), "numOfUsersRated to update rating", Toast.LENGTH_SHORT)
-//                    .show()
+                Log.d("here", "denied")
             }
         }
         sumOfUsers.setValue(newSum).addOnCompleteListener { task ->
             if (task.isSuccessful) {
-//                Toast.makeText(requireContext(), "sumOfUsers updated successfully", Toast.LENGTH_SHORT)
-//                    .show()
                 Log.d("here", "success")
-
             } else {
-//                Toast.makeText(requireContext(), "sumOfUsers to update rating", Toast.LENGTH_SHORT)
-//                    .show()
+                Log.d("here", "denied")
             }
         }
     }
@@ -180,15 +212,9 @@ class LocationFragment : Fragment() {
 
         ratingRef.setValue(newRating).addOnCompleteListener { task ->
             if (task.isSuccessful) {
-//                Toast.makeText(requireContext(), "Rating updated successfully", Toast.LENGTH_SHORT)
-//                    .show()
                 Log.d("here", "success")
-
-//                parentFragmentManager.popBackStack()
-
             } else {
-//                Toast.makeText(requireContext(), "Failed to update rating", Toast.LENGTH_SHORT)
-//                    .show()
+                Log.d("here", "denied")
             }
         }
     }
