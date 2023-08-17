@@ -22,6 +22,12 @@
         android:title="All locations"
         />
 
+    <item
+        android:id="@+id/nav_ranglist"
+        android:icon="@drawable/baseline_bar_chart_24"
+        android:title="Rang list"
+        />
+
     <item android:title="Profile">
         <menu>
             <item
