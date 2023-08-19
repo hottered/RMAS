@@ -19,6 +19,10 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
+import java.util.TimeZone
 
 class LocationFragment : Fragment() {
 
@@ -29,6 +33,8 @@ class LocationFragment : Fragment() {
     private lateinit var titleLocation: TextView
     private lateinit var descriptionLocation: TextView
     private lateinit var ratingLocation: TextView
+    private lateinit var dateCreated:TextView
+    private lateinit var commonSpecie:TextView
     private lateinit var submitButton: Button
 
     private var sumOfAllUsers: Double? = 0.0
@@ -70,6 +76,9 @@ class LocationFragment : Fragment() {
             view.findViewById<TextView>(R.id.description_location_view)
         ratingLocation = view.findViewById<TextView>(R.id.rating_location_view)
 
+        dateCreated = view.findViewById(R.id.date_of_creation_location)
+        commonSpecie = view.findViewById(R.id.common_specie_location)
+
         ratingBar = view.findViewById(R.id.ratingBar_adapter)
         submitButton = view.findViewById(R.id.button_submit_rating)
 
@@ -81,10 +90,13 @@ class LocationFragment : Fragment() {
             if (markerData.user?.uid == authReference.currentUser?.uid) {
                 ratingBar.visibility = View.GONE
                 submitButton.visibility = View.GONE
+                view.findViewById<TextView>(R.id.textView9).visibility = View.GONE
             }
 
             sumOfAllUsers = markerData.sumOfRatings
             numOfUsersWhoRated = markerData.numOfUsersRated
+            dateCreated.text = convertTimeToDate(markerData.createdAtUtc!!.toLong())
+            commonSpecie.text = markerData.commonSpecie
 
             titleLocation.text = markerData.title.toString()
             descriptionLocation.text = markerData.description.toString()
@@ -95,6 +107,7 @@ class LocationFragment : Fragment() {
             }
             glide.load(markerData.imageMarker)
                 .into(imageLocation)
+
 
         }
         submitButton.setOnClickListener {
@@ -115,6 +128,12 @@ class LocationFragment : Fragment() {
         return view
     }
 
+    private fun convertTimeToDate(time: Long): String {
+        val utc = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+        utc.timeInMillis = time
+        val format = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        return format.format(utc.time);
+    }
     private fun updateUserScore(score: Double, ownerOfLocationId: String) {
 
         val databaseReferenceForUser =
@@ -135,7 +154,6 @@ class LocationFragment : Fragment() {
                 }
         }
     }
-
     private fun returnScoreValueOfUser(callback: (Double?) -> Unit) {
         val userScore =
             FirebaseDatabase.getInstance().getReference("users/${ownerOfLocationId}/score")
@@ -153,7 +171,6 @@ class LocationFragment : Fragment() {
             }
         })
     }
-
     private fun retrieveMarkerInformation(
         latitude: Double?,
         longitude: Double?,
@@ -187,7 +204,6 @@ class LocationFragment : Fragment() {
             })
         }
     }
-
     private fun updateMarkerUsersAndNumber(markerId: String, newSum: Double, newCount: Double) {
         val numOfUsersRated = databaseReference.child(markerId).child("numOfUsersRated")
         val sumOfUsers = databaseReference.child(markerId).child("sumOfRatings")
@@ -206,7 +222,6 @@ class LocationFragment : Fragment() {
             }
         }
     }
-
     private fun updateMarkerRating(markerId: String, newRating: Double) {
         val ratingRef = databaseReference.child(markerId).child("rating")
 

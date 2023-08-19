@@ -69,4 +69,7 @@ dependencies {
     //glide for pictures
     implementation ("com.github.bumptech.glide:glide:4.15.1")
 
+    //readmore textView
+    implementation ("kr.co.prnd:readmore-textview:1.0.0")
+
 }
