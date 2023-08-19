@@ -30,6 +30,8 @@ class RegisterActivity : AppCompatActivity() {
         database = FirebaseDatabase.getInstance();
         storage = FirebaseStorage.getInstance();
 
+        val loading = LoadingDialog(this)
+
         val buttonRegister = findViewById<Button>(R.id.registerbutton_register);
         val alreadyHaveAccount = findViewById<TextView>(R.id.already_have_account);
         val userImage = findViewById<CircleImageView>(R.id.imageView);
@@ -42,6 +44,7 @@ class RegisterActivity : AppCompatActivity() {
         }
         buttonRegister.setOnClickListener {
 
+
             val username = findViewById<EditText>(R.id.username_edittext_register).text.toString();
             val email = findViewById<EditText>(R.id.email_edittext_register).text.toString();
             val password = findViewById<EditText>(R.id.password_edittext_register).text.toString();
@@ -51,6 +54,8 @@ class RegisterActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
+            loading.startLoading()
+
             Toast.makeText(this, email, Toast.LENGTH_SHORT).show()
 
             auth.createUserWithEmailAndPassword(email, password)
@@ -58,9 +63,7 @@ class RegisterActivity : AppCompatActivity() {
                     if (task.isSuccessful) {
                         Log.d("Main", "createUserWithEmail:success")
                         Toast.makeText(this, "Authentication success.", Toast.LENGTH_SHORT).show()
-
-                        uploadData(username,email);
-
+                        uploadData(username,email,loading);
                     } else {
                         Log.w("Main", "createUserWithEmail:failure", task.exception)
                         Toast.makeText(baseContext, "Authentication failed.", Toast.LENGTH_SHORT).show()
@@ -77,12 +80,12 @@ class RegisterActivity : AppCompatActivity() {
 
     }
 
-    private fun uploadData(username: String,email :String) {
+    private fun uploadData(username: String,email :String,loadingDialog: LoadingDialog) {
         val reference = storage.reference.child("Profile").child(auth.currentUser?.uid.toString())
         reference.putFile(selectedImg).addOnCompleteListener{
             if(it.isSuccessful){
                 reference.downloadUrl.addOnSuccessListener { task->
-                    uploadInfo(username,email,task.toString())
+                    uploadInfo(username,email,task.toString(),loadingDialog)
 
                 }
             }
@@ -90,7 +93,7 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
-    private fun uploadInfo(username: String,email:String,imgUrl: String) {
+    private fun uploadInfo(username: String,email:String,imgUrl: String,loadingDialog: LoadingDialog) {
         val uid = FirebaseAuth.getInstance().uid ?: ""
         val ref = FirebaseDatabase.getInstance().getReference("/users/$uid")
 
@@ -98,6 +101,7 @@ class RegisterActivity : AppCompatActivity() {
         ref.setValue(user)
             .addOnSuccessListener {
                 Toast.makeText(this,"Successfullt added to database",Toast.LENGTH_SHORT).show();
+                loadingDialog.isDismiss()
                 val intent = Intent(this,LoginActivity::class.java)
                 startActivity(intent)
                 finish();
