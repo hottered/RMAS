@@ -67,8 +67,8 @@ class HomePage : AppCompatActivity()  {
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, HomeFragment()).commit()
-            navView.setCheckedItem(R.id.nav_home)
+                .replace(R.id.fragment_container, MapFragment()).commit()
+            navView.setCheckedItem(R.id.nav_map)
         }
 
         navView.setNavigationItemSelectedListener {
