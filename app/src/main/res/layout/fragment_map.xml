@@ -8,11 +8,11 @@
     tools:context=".MapFragment">
 
     <!-- TODO: Update blank fragment layout -->
-<!--        <fragment-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:id="@+id/map"-->
-<!--            android:name="com.google.android.gms.maps.SupportMapFragment" />-->
+    <!--        <fragment-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="match_parent"-->
+    <!--            android:id="@+id/map"-->
+    <!--            android:name="com.google.android.gms.maps.SupportMapFragment" />-->
 
     <com.google.android.gms.maps.MapView
         android:id="@+id/map_view"
@@ -22,17 +22,20 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchView" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <SearchView
         android:id="@+id/searchView"
         android:layout_width="0dp"
-        android:layout_height="60dp"
-        android:background="@color/white"
+        android:layout_height="50dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:background="@drawable/search_item"
         android:queryHint="Search location"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/button_filters_map"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toBottomOf="@+id/button_filters_map"
+        app:layout_constraintEnd_toStartOf="@+id/button_filters_map"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/button_filters_map" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btn_place_marker"
@@ -49,10 +52,28 @@
     <Button
         android:id="@+id/button_filters_map"
         android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="5dp"
+        android:drawableLeft="@drawable/outline_tune_white_20"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:text="filters"
+        app:cornerRadius="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/map_view" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btn_recenter_user"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Filters"
-        app:layout_constraintBottom_toTopOf="@+id/map_view"
-        app:layout_constraintStart_toStartOf="@+id/map_view"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginBottom="8dp"
+        android:clickable="true"
+        android:contentDescription="btn_get_location"
+        android:src="@drawable/ic_action_down_arrow"
+        app:backgroundTint="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/btn_place_marker"
+        app:layout_constraintEnd_toEndOf="@+id/btn_place_marker"
+        app:layout_constraintStart_toStartOf="@+id/btn_place_marker" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -42,6 +42,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     private lateinit var btnPlaceMarker: FloatingActionButton
+    private lateinit var btnRecenterUser : FloatingActionButton
     private lateinit var btnFilters: Button
 
 
@@ -68,11 +69,13 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         mapView.onResume()
         mapView.getMapAsync(this)
 
+
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
 
         btnPlaceMarker = view.findViewById(R.id.btn_place_marker)
         btnFilters = view.findViewById(R.id.button_filters_map)
         searchView = view.findViewById(R.id.searchView)
+        btnRecenterUser = view.findViewById(R.id.btn_recenter_user)
 
         selectedUsers = arguments?.getStringArrayList("selectedUsers") ?: ArrayList()
         selectedSpecies = arguments?.getStringArrayList("selectedSpecies") ?: ArrayList()
@@ -109,6 +112,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             placeMarkerAtCurrentLocation()
         }
 
+        btnRecenterUser.setOnClickListener{
+            enableMyLocation()
+        }
+
         btnFilters.setOnClickListener {
             val filtersFragment = FilterFragment()
             parentFragmentManager.beginTransaction()
@@ -127,6 +134,29 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         enableMyLocation()
         fetchMarkersFromFirebase()
 
+
+        val locationButton =
+            (mapView.findViewById<View>(Integer.parseInt("1")).parent as View).findViewById<View>(Integer.parseInt("2"))
+//        val rlp = locationButton.layoutParams as RelativeLayout.LayoutParams
+
+        locationButton.visibility = View.GONE
+        // Position on left bottom
+//        rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 1)
+//        rlp.addRule(RelativeLayout.ALIGN_PARENT_LEFT, 50)
+//        rlp.addRule(RelativeLayout.ALIGN_PARENT_START,0)
+//        rlp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 0)
+//        rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0)
+//        rlp.addRule(RelativeLayout.ALIGN_PARENT_END, 0)
+//        rlp.addRule(RelativeLayout.ALIGN_END, 0)
+//
+//        // Remove the duplicate ALIGN_PARENT_LEFT rule
+//        rlp.removeRule(RelativeLayout.ALIGN_PARENT_LEFT)
+//
+//        // Set margins
+//        rlp.setMargins(0, 0, 0, 0)
+//
+//        // Apply the updated layout parameters to the locationButton
+//        locationButton.layoutParams = rlp
     }
 
     private fun fetchMarkersFromFirebase() {
@@ -289,13 +319,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                         DEFAULT_ZOOM
                     )
                 )
-//                googleMap.addCircle(
-//                    CircleOptions()
-//                    .center(currentLatLng)
-//                    .radius(50.0)
-//                    .strokeWidth(2f)
-//                    .strokeColor(Color.BLUE)
-//                    .fillColor(Color.parseColor("#500084d3")))
 
             }
 
