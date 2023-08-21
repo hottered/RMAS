@@ -29,12 +29,17 @@ class RangListAdapter(private val usersList: ArrayList<User>) :
             0 -> {
                 holder.positionTextView.setTextColor(ContextCompat.getColor(holder.itemView.context, R.color.gold))
             }
+
             1 -> {
                 holder.positionTextView.setTextColor(ContextCompat.getColor(holder.itemView.context, R.color.silver))
             }
+
             2 -> {
                 holder.positionTextView.setTextColor(ContextCompat.getColor(holder.itemView.context, R.color.bronze))
             }
+
+            else -> holder.positionTextView.setTextColor(ContextCompat.getColor(holder.itemView.context, R.color.black))
+
         }
         holder.positionTextView.text = "${position.plus(1)}"
         holder.name.text = currentItem.username

@@ -47,6 +47,9 @@ class AddLocationFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_add_location, container, false)
 
+
+        val loading = LoadingDialog(requireActivity())
+
         val spinner = view.findViewById<Spinner>(R.id.spinner)
 
         val speciesNames = loadSpeciesNamesFromResource()
@@ -90,7 +93,8 @@ class AddLocationFragment : Fragment() {
         currentLocation = arguments?.getParcelable("current_location")
         Log.d("LocationFragment", currentLocation.toString());
         btnAddLocation.setOnClickListener {
-            getUserData()
+            loading.startLoading()
+            getUserData(loading)
         }
         imageForMarker.setOnClickListener {
             val intent = Intent();
@@ -103,7 +107,7 @@ class AddLocationFragment : Fragment() {
     }
 
 
-    private fun uploadMarkerImageUrl(markerKey: DatabaseReference) {
+    private fun uploadMarkerImageUrl(markerKey: DatabaseReference,loading:LoadingDialog) {
         val reference = storage.reference.child("Markers").child(markerKey.key.toString())
         reference.putFile(selectedImg).addOnSuccessListener {
             reference.downloadUrl.addOnCompleteListener {
@@ -125,6 +129,7 @@ class AddLocationFragment : Fragment() {
                         )
                         markerKey.setValue(markerData).addOnSuccessListener {
                             // Marker data uploaded successfully
+                            loading.isDismiss()
                             navigateBackToMapFragment()
                         }.addOnFailureListener {
                             // Failed to upload marker data
@@ -163,14 +168,14 @@ class AddLocationFragment : Fragment() {
         }
     }
 
-    private fun getUserData() {
+    private fun getUserData(loading: LoadingDialog) {
         val uid = firebaseAuth.currentUser?.uid.toString();
 
         databaseReference.child(uid).get().addOnSuccessListener { snapshot ->
             if (snapshot.exists()) {
                 user = snapshot.getValue(User::class.java)!!
 
-                addLocationToFirebase()
+                addLocationToFirebase(loading)
 
             } else {
                 // Handle the case when the user data does not exist in the database
@@ -180,14 +185,14 @@ class AddLocationFragment : Fragment() {
         }
     }
 
-    private fun addLocationToFirebase() {
+    private fun addLocationToFirebase(loading: LoadingDialog) {
         if (currentLocation != null) {
 
             val databaseReference = FirebaseDatabase.getInstance().getReference("markers")
             val newMarkerReference = databaseReference.push()
             Log.d("MarkerKey", newMarkerReference.key.toString());
 
-            uploadMarkerImageUrl(newMarkerReference)
+            uploadMarkerImageUrl(newMarkerReference,loading)
 
         }
     }

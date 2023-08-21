@@ -19,6 +19,8 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
 
 
+        val loading = LoadingDialog(this)
+
         firebaseAuth = FirebaseAuth.getInstance();
 
 //        if(firebaseAuth.currentUser != null)
@@ -42,11 +44,13 @@ class LoginActivity : AppCompatActivity() {
                 Toast.makeText(this,"Please enter email and password",Toast.LENGTH_SHORT).show();
                 return@setOnClickListener
             }
+            loading.startLoading()
             firebaseAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
                         // Sign in success, update UI with the signed-in user's information
                         Log.d("Login:", "signInWithEmail:success")
+                        loading.isDismiss()
                         val intent = Intent(this,HomePage::class.java)
                         startActivity(intent);
                         finish()
@@ -57,6 +61,7 @@ class LoginActivity : AppCompatActivity() {
                         Log.w("Login:", "signInWithEmail:failure", task.exception)
                         Toast.makeText(this, task.exception!!.message, Toast.LENGTH_SHORT,).show()
 //                        updateUI(null)
+                        loading.isDismiss()
                     }
                 }
         }
