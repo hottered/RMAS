@@ -35,7 +35,9 @@
         </activity>
         <activity
             android:name=".RegisterActivity"
-            android:exported="false"/>
+            android:exported="false"
+            android:theme="@style/Theme.MainActivity"
+            />
         <activity android:name=".SecondActivity"
             android:exported="false"
             />

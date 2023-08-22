@@ -12,110 +12,124 @@
 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#00BCD4"
+        android:background="@drawable/background"
         tools:context=".RegisterActivity">
 
 
-        <FrameLayout
-            android:id="@+id/frameLayout"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="32dp"
-            android:background="@drawable/rouneded_select_photo_button"
-            android:gravity="center"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:background="@drawable/login_register_inputs"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="MissingConstraints">
+            app:layout_constraintTop_toTopOf="parent">
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/imageView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/rouneded_select_photo_button"
-                app:civ_border_width="3dp" />
+            <FrameLayout
+                android:id="@+id/frameLayout"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="32dp"
+                android:background="@drawable/rouneded_select_photo_button"
+                android:gravity="center"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="MissingConstraints">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/rouneded_select_photo_button"
+                    app:civ_border_color="@color/lavender"
+                    app:civ_border_width="3dp" />
+
+                <!-- Add the text view here if you want to display text on top of the circular image -->
+
+            </FrameLayout>
+
+            <EditText
+                android:id="@+id/username_edittext_register"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginEnd="32dp"
+                android:background="@drawable/login_register_inputs"
+                android:drawableLeft="@drawable/outline_person_outline_24"
+                android:drawablePadding="8dp"
+                android:ems="10"
+                android:hint="Username"
+                android:inputType="text"
+                android:padding="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/frameLayout" />
+
+            <EditText
+                android:id="@+id/email_edittext_register"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/login_register_inputs"
+                android:drawableLeft="@drawable/baseline_mail_outline_24"
+                android:drawablePadding="8dp"
+                android:ems="10"
+                android:hint="Email"
+                android:inputType="textEmailAddress"
+                android:padding="16dp"
+                app:layout_constraintEnd_toEndOf="@+id/username_edittext_register"
+                app:layout_constraintStart_toStartOf="@+id/username_edittext_register"
+                app:layout_constraintTop_toBottomOf="@+id/username_edittext_register" />
+
+            <EditText
+                android:id="@+id/password_edittext_register"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/login_register_inputs"
+                android:drawableLeft="@drawable/outline_lock_24"
+                android:drawablePadding="8dp"
+                android:ems="10"
+                android:hint="Password"
+                android:inputType="textPassword"
+                android:padding="16dp"
+                app:layout_constraintEnd_toEndOf="@+id/email_edittext_register"
+                app:layout_constraintStart_toStartOf="@+id/email_edittext_register"
+                app:layout_constraintTop_toBottomOf="@+id/email_edittext_register" />
+
+            <Button
+                android:id="@+id/registerbutton_register"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Register"
+                app:cornerRadius="10dp"
+                app:layout_constraintEnd_toEndOf="@+id/password_edittext_register"
+                app:layout_constraintStart_toStartOf="@+id/password_edittext_register"
+                app:layout_constraintTop_toBottomOf="@+id/password_edittext_register" />
 
             <TextView
-                android:id="@+id/uploadimage_textview_register"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="Upload an image"
-                android:textAlignment="center"
-                android:textColor="@color/white" />
+                android:id="@+id/already_have_account"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:layout_marginBottom="16dp"
+                android:text="Already have an account?"
+                android:textColor="@color/lavender"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/registerbutton_register"
+                app:layout_constraintStart_toStartOf="@+id/registerbutton_register"
+                app:layout_constraintTop_toBottomOf="@+id/registerbutton_register" />
 
-            <!-- Add the text view here if you want to display text on top of the circular image -->
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </FrameLayout>
-
-        <EditText
-            android:id="@+id/username_edittext_register"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="32dp"
-            android:layout_marginEnd="32dp"
-            android:background="@color/white"
-            android:ems="10"
-            android:hint="Username"
-            android:inputType="text"
-            android:padding="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/frameLayout" />
-
-        <EditText
-            android:id="@+id/email_edittext_register"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_marginTop="8dp"
-            android:background="@color/white"
-            android:ems="10"
-            android:hint="Email"
-            android:inputType="textEmailAddress"
-            android:padding="16dp"
-            app:layout_constraintEnd_toEndOf="@+id/username_edittext_register"
-            app:layout_constraintStart_toStartOf="@+id/username_edittext_register"
-            app:layout_constraintTop_toBottomOf="@+id/username_edittext_register" />
-
-        <EditText
-            android:id="@+id/password_edittext_register"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_marginTop="8dp"
-            android:background="@color/white"
-            android:ems="10"
-            android:hint="Password"
-            android:inputType="textPassword"
-            android:padding="16dp"
-            app:layout_constraintEnd_toEndOf="@+id/email_edittext_register"
-            app:layout_constraintStart_toStartOf="@+id/email_edittext_register"
-            app:layout_constraintTop_toBottomOf="@+id/email_edittext_register" />
-
-        <Button
-            android:id="@+id/registerbutton_register"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:background="#0D2DDF"
-            android:text="Register"
-            app:layout_constraintEnd_toEndOf="@+id/password_edittext_register"
-            app:layout_constraintStart_toStartOf="@+id/password_edittext_register"
-            app:layout_constraintTop_toBottomOf="@+id/password_edittext_register" />
-
-        <TextView
-            android:id="@+id/already_have_account"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:text="Already have an account?"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="@+id/registerbutton_register"
-            app:layout_constraintStart_toStartOf="@+id/registerbutton_register"
-            app:layout_constraintTop_toBottomOf="@+id/registerbutton_register" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
