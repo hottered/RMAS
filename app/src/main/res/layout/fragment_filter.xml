@@ -19,30 +19,35 @@
         <TextView
             android:id="@+id/textView"
             android:layout_width="0dp"
-            android:layout_height="103dp"
+            android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="12dp"
             android:layout_marginEnd="16dp"
-            android:background="@android:drawable/editbox_background"
-            android:drawableRight="@android:drawable/arrow_down_float"
+            android:background="@drawable/login_register_inputs"
+            android:drawableRight="@drawable/baseline_add_circle_24"
             android:drawablePadding="16dp"
-            android:hint="Filter by users"
+            android:hint="All users"
             android:padding="12dp"
+            android:textColor="@color/dark_lavander"
+            android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="@+id/textView12"
             app:layout_constraintTop_toBottomOf="@+id/textView12" />
 
         <TextView
             android:id="@+id/filterBy_specie_textView"
             android:layout_width="0dp"
-            android:layout_height="103dp"
+            android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:layout_marginTop="16dp"
-            android:background="@android:drawable/editbox_background"
-            android:drawableRight="@android:drawable/arrow_down_float"
+            android:background="@drawable/login_register_inputs"
+            android:drawableRight="@drawable/baseline_add_circle_24"
             android:drawablePadding="16dp"
-            android:hint="Filter by specie"
+            android:hint="All species"
             android:padding="12dp"
+            android:textColor="@color/dark_lavander"
+            android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="@+id/textView"
             app:layout_constraintStart_toStartOf="@+id/textView13"
             app:layout_constraintTop_toBottomOf="@+id/textView13" />
@@ -51,25 +56,26 @@
             android:id="@+id/apply_filters_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="64dp"
+            android:layout_marginTop="32dp"
             android:drawableRight="@drawable/outline_tune_white_24"
             android:text="Apply filters"
             app:layout_constraintEnd_toEndOf="@+id/filterBy_radius"
-            app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="@+id/filterBy_radius"
             app:layout_constraintTop_toBottomOf="@+id/filterBy_radius" />
 
         <TextView
             android:id="@+id/filterBy_daterange"
             android:layout_width="0dp"
-            android:layout_height="103dp"
+            android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:layout_marginTop="16dp"
-            android:background="@android:drawable/editbox_background"
-            android:drawableRight="@android:drawable/arrow_down_float"
+            android:background="@drawable/login_register_inputs"
+            android:drawableRight="@drawable/baseline_add_circle_24"
             android:drawablePadding="16dp"
-            android:hint="Filter by date"
+            android:hint="All dates"
             android:padding="12dp"
+            android:textColor="@color/dark_lavander"
+            android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="@+id/filterBy_specie_textView"
             app:layout_constraintStart_toStartOf="@+id/textView14"
             app:layout_constraintTop_toBottomOf="@+id/textView14" />
@@ -81,11 +87,13 @@
             android:layout_centerInParent="true"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
-            android:background="@android:drawable/editbox_background"
+            android:background="@drawable/login_register_inputs"
             android:drawablePadding="16dp"
             android:hint="Filter by radius"
             android:inputType="number|numberDecimal"
             android:padding="12dp"
+            android:textColor="@color/dark_lavander"
+            android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/textView15"
             app:layout_constraintTop_toBottomOf="@+id/textView15" />
@@ -95,7 +103,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
+            android:layout_marginTop="24dp"
             android:text="Users"
+            android:textSize="18sp"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -105,6 +116,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="Species"
+            android:textSize="18sp"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@+id/textView"
             app:layout_constraintTop_toBottomOf="@+id/textView" />
 
@@ -114,6 +127,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="Date"
+            android:textSize="18sp"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@+id/filterBy_specie_textView"
             app:layout_constraintTop_toBottomOf="@+id/filterBy_specie_textView" />
 
@@ -123,8 +138,37 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="Radius"
+            android:textSize="18sp"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@+id/filterBy_daterange"
             app:layout_constraintTop_toBottomOf="@+id/filterBy_daterange" />
+
+        <TextView
+            android:id="@+id/textView16"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:text="km"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/filterBy_radius"
+            app:layout_constraintEnd_toEndOf="@+id/filterBy_radius"
+            app:layout_constraintTop_toTopOf="@+id/filterBy_radius" />
+
+        <Button
+            android:id="@+id/button_clear_filters"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="@color/white"
+            android:text="Clear filters"
+            android:textColor="@color/lavender"
+            app:layout_constraintEnd_toEndOf="@+id/apply_filters_button"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/apply_filters_button"
+            app:layout_constraintTop_toBottomOf="@+id/apply_filters_button"
+            app:strokeColor="@color/lavender"
+            app:strokeWidth="3dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -33,6 +33,7 @@ class FilterFragment : Fragment() {
     private lateinit var specieTextHolder: TextView
     private lateinit var dateTextHolder: TextView
     private lateinit var filterByRadius : EditText
+    private lateinit var buttonResetFilters:Button
 
     private var selectedUser: BooleanArray = booleanArrayOf()
     private var newListUsers: ArrayList<Int> = ArrayList()
@@ -58,6 +59,8 @@ class FilterFragment : Fragment() {
         specieTextHolder = view.findViewById(R.id.filterBy_specie_textView)
         dateTextHolder = view.findViewById(R.id.filterBy_daterange)
         filterByRadius = view.findViewById(R.id.filterBy_radius)
+        buttonResetFilters = view.findViewById(R.id.button_clear_filters)
+
 
 
         btnApplyFilters.setOnClickListener {
@@ -95,6 +98,41 @@ class FilterFragment : Fragment() {
                 ) // R.id.fragment_container should be the ID of the container where you want to display the MapFragment
                 .addToBackStack(null) // Add this transaction to the back stack
                 .commit()
+        }
+
+        buttonResetFilters.setOnClickListener {
+            selectedUserNamesList = ArrayList()
+            selectedSpecieNamesList = ArrayList()
+
+            dateStart = 0
+            dateEnd = 0
+            radiusNumber = 0.0
+
+//            usersTextHolder.text = ""
+//            specieTextHolder.text = ""
+            dateTextHolder.text = ""
+            filterByRadius.setText(null);
+
+            for (j in selectedUser.indices) {
+                // remove all selection
+                selectedUser[j] = false
+                // clear language list
+                newListUsers.clear()
+                // clear text view value
+                usersTextHolder.text = ""
+            }
+
+            for (j in selectedSpecie.indices) {
+                // remove all selection
+                selectedSpecie[j] = false
+                // clear language list
+                newListSpecie.clear()
+                // clear text view value
+                specieTextHolder.text = ""
+            }
+
+
+
         }
 
         dateTextHolder.setOnClickListener {
