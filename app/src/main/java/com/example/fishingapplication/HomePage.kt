@@ -74,8 +74,8 @@ class HomePage : AppCompatActivity()  {
         navView.setNavigationItemSelectedListener {
             when (it.itemId) {
 
-                R.id.nav_home -> supportFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, HomeFragment()).commit()
+//                R.id.nav_home -> supportFragmentManager.beginTransaction()
+//                    .replace(R.id.fragment_container, HomeFragment()).commit()
 
                 R.id.nav_map -> supportFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container, MapFragment()).commit()
