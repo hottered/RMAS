@@ -16,5 +16,6 @@
     <color name="gold">#FFEB3B</color>
     <color name="silver">#A6A6A4</color>
     <color name="bronze">#C67600</color>
+    <color name="background_add_location">#BCBCBC</color>
 
 </resources>

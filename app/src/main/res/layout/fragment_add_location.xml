@@ -10,7 +10,7 @@
 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#00BCD4"
+        android:background="@color/white"
         tools:context=".AddLocationFragment">
 
 
@@ -18,23 +18,24 @@
             android:id="@+id/image_location_marker"
             android:layout_width="0dp"
             android:layout_height="250dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:cropToPadding="false"
             android:scaleType="fitXY"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/placeholder" />
+            app:srcCompat="@drawable/upload_photo_location_fragment" />
 
         <EditText
             android:id="@+id/title_marker_custom"
             android:layout_width="0dp"
             android:layout_height="50dp"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="3dp"
-            android:layout_marginEnd="8dp"
-            android:background="@drawable/edit_text_design"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/login_register_inputs"
             android:ems="10"
             android:hint="Enter a title..."
             android:inputType="text"
@@ -48,7 +49,7 @@
             android:layout_width="0dp"
             android:layout_height="180dp"
             android:layout_marginTop="3dp"
-            android:background="@drawable/edit_text_design"
+            android:background="@drawable/login_register_inputs"
             android:ems="10"
             android:gravity="top"
             android:hint="Write about this location..."
@@ -67,6 +68,7 @@
             android:layout_marginTop="24dp"
             android:text="Choose the specie *"
             android:textSize="16sp"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="@+id/marker_description"
             app:layout_constraintStart_toStartOf="@+id/marker_description"
             app:layout_constraintTop_toBottomOf="@+id/marker_description" />
@@ -102,6 +104,7 @@
             android:layout_marginTop="24dp"
             android:text="Title *"
             android:textSize="16sp"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@+id/title_marker_custom"
             app:layout_constraintTop_toBottomOf="@+id/image_location_marker" />
 
@@ -112,6 +115,7 @@
             android:layout_marginTop="24dp"
             android:text="Description *"
             android:textSize="16sp"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@+id/title_marker_custom"
             app:layout_constraintTop_toBottomOf="@+id/title_marker_custom" />
     </androidx.constraintlayout.widget.ConstraintLayout>

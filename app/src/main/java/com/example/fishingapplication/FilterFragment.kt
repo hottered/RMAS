@@ -64,6 +64,7 @@ class FilterFragment : Fragment() {
 
 
         btnApplyFilters.setOnClickListener {
+
             Log.d("SelectedUsers", selectedUserNamesList.toString())
             Log.d("SelectedSpecies", selectedSpecieNamesList.toString())
 

@@ -1,0 +1,22 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Shadow -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/lavender" /> <!-- Shadow color -->
+            <corners android:radius="30dp"/>
+        </shape>
+    </item>
+
+    <!-- Main shape with rounded corners -->
+    <item android:top="2dp" android:left="2dp" android:right="2dp" android:bottom="2dp">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/white" /> <!-- Background color -->
+            <corners android:radius="30dp"/>
+        </shape>
+    </item>
+
+    <item  android:height="100dp" android:width="100dp" android:gravity="center" android:top="30dp" android:left="30dp" android:right="30dp" android:bottom="30dp" android:drawable="@drawable/baseline_add_photo_alternate_24"/>
+
+
+</layer-list>

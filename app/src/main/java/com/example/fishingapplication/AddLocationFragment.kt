@@ -38,6 +38,8 @@ class AddLocationFragment : Fragment() {
     private lateinit var imageForMarker: ImageView
     private lateinit var selectedImg: Uri
 
+    private var isImageLoaded : Boolean = false
+
     private var currentLocation: LatLng? = null
 
     override fun onCreateView(
@@ -93,6 +95,13 @@ class AddLocationFragment : Fragment() {
         currentLocation = arguments?.getParcelable("current_location")
         Log.d("LocationFragment", currentLocation.toString());
         btnAddLocation.setOnClickListener {
+
+            println("slika je ove "+ imageForMarker.drawable)
+            if(markerTitle.text.isNullOrEmpty() ||
+                markerDescription.text.isNullOrEmpty() ||
+                !isImageLoaded){
+                return@setOnClickListener
+            }
             loading.startLoading()
             getUserData(loading)
         }
@@ -162,6 +171,7 @@ class AddLocationFragment : Fragment() {
             if (data.data != null) {
                 selectedImg = data.data!!
                 userImage?.setImageURI(selectedImg)
+                isImageLoaded = true;
 //                val textToGoAway = view?.findViewById<TextView>(R.id.uploadimage_textview_register)
 //                textToGoAway.visibility = View.GONE
             }
