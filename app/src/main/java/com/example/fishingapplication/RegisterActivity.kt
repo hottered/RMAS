@@ -27,6 +27,7 @@ class RegisterActivity : AppCompatActivity() {
     private lateinit var database: FirebaseDatabase
     private lateinit var storage: FirebaseStorage
     private lateinit var selectedImg: Uri
+    private var isImageLoaded : Boolean = false
 
     private val REQUEST_IMAGE_GALLERY = 132
     private val REQUEST_IMAGE_CAMERA = 142
@@ -106,8 +107,8 @@ class RegisterActivity : AppCompatActivity() {
             val email = findViewById<EditText>(R.id.email_edittext_register).text.toString();
             val password = findViewById<EditText>(R.id.password_edittext_register).text.toString();
 
-            if (email.isEmpty() || password.isEmpty()) {
-                Toast.makeText(this, "Please insert email and passowrd", Toast.LENGTH_SHORT).show()
+            if (email.isEmpty() || password.isEmpty() || !isImageLoaded) {
+                Toast.makeText(this, "Please fill up all the fields", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -123,9 +124,9 @@ class RegisterActivity : AppCompatActivity() {
                         uploadData(username, email, loading);
                     } else {
                         Log.w("Main", "createUserWithEmail:failure", task.exception)
-                        Toast.makeText(baseContext, "Authentication failed.", Toast.LENGTH_SHORT)
+                        Toast.makeText(baseContext, task.exception!!.message, Toast.LENGTH_SHORT)
                             .show()
-//                        loading.isDismiss()
+                        loading.isDismiss()
                     }
                 }
         }
@@ -179,15 +180,19 @@ class RegisterActivity : AppCompatActivity() {
             if (data.data != null) {
                 selectedImg = data.data!!
                 userImage.setImageURI(selectedImg)
+                isImageLoaded = true;
+
             }
         }
         else if(data!= null && requestCode == REQUEST_IMAGE_CAMERA){
             val imageBitmap = data.extras?.get("data") as Bitmap
             selectedImg = getImageUriFromBitmap(imageBitmap)
             userImage.setImageURI(selectedImg)
+            isImageLoaded = true;
+
         }
         else{
-            Toast.makeText(this,"Something went wrong",Toast.LENGTH_SHORT).show()
+            Toast.makeText(this,"Something went wrong with picture",Toast.LENGTH_SHORT).show()
         }
     }
     private fun getImageUriFromBitmap(bitmap: Bitmap): Uri {

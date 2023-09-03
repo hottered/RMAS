@@ -61,8 +61,6 @@ class FilterFragment : Fragment() {
         filterByRadius = view.findViewById(R.id.filterBy_radius)
         buttonResetFilters = view.findViewById(R.id.button_clear_filters)
 
-
-
         btnApplyFilters.setOnClickListener {
 
             Log.d("SelectedUsers", selectedUserNamesList.toString())
@@ -156,14 +154,9 @@ class FilterFragment : Fragment() {
                     usernameList.toTypedArray(),
                     selectedUser,
                     DialogInterface.OnMultiChoiceClickListener { dialogInterface, i, b ->
-                        // check condition
                         if (b) {
-                            // when checkbox selected
-                            // Add position in lang list
                             newListUsers.add(i)
-                            // Sort array list
                             newListUsers.sort()
-
                             selectedUserNamesList.add(usernameList[i])
                         } else {
                             // when checkbox unselected
@@ -176,7 +169,6 @@ class FilterFragment : Fragment() {
                 builder.setPositiveButton(
                     "OK",
                     DialogInterface.OnClickListener { dialogInterface, i ->
-                        // Initialize string builder
                         val stringBuilder = StringBuilder()
                         // use for loop
                         for (j in 0 until newListUsers.size) {
@@ -198,7 +190,6 @@ class FilterFragment : Fragment() {
                 builder.setNegativeButton(
                     "Cancel",
                     DialogInterface.OnClickListener { dialogInterface, i ->
-                        // dismiss dialog
                         dialogInterface.dismiss()
                     })
                 builder.setNeutralButton(

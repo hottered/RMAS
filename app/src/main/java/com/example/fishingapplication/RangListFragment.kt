@@ -43,6 +43,7 @@ class RangListFragment : Fragment() {
         usersFromFirebase.addValueEventListener(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
 
+                usersArrayList.clear();
                 if(snapshot.exists()){
                     for (userSnapshot in snapshot.children){
                         val user = userSnapshot.getValue(User::class.java)

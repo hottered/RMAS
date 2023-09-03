@@ -23,13 +23,6 @@ class LoginActivity : AppCompatActivity() {
 
         firebaseAuth = FirebaseAuth.getInstance();
 
-//        if(firebaseAuth.currentUser != null)
-//        {
-//            val intent = Intent(this,HomePage::class.java)
-//            startActivity(intent);
-//            finish()
-//        }
-
         binding.gotosignupTextview.setOnClickListener{
             startActivity(
                 Intent(this,RegisterActivity::class.java)
@@ -54,13 +47,10 @@ class LoginActivity : AppCompatActivity() {
                         val intent = Intent(this,HomePage::class.java)
                         startActivity(intent);
                         finish()
-//                        val user = auth.currentUser
-//                        updateUI(user)
+
                     } else {
-                        // If sign in fails, display a message to the user.
                         Log.w("Login:", "signInWithEmail:failure", task.exception)
                         Toast.makeText(this, task.exception!!.message, Toast.LENGTH_SHORT,).show()
-//                        updateUI(null)
                         loading.isDismiss()
                     }
                 }
@@ -72,7 +62,7 @@ class LoginActivity : AppCompatActivity() {
 
         if(firebaseAuth.currentUser != null)
         {
-            Toast.makeText(this,"Ovde sam u login",Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this,"Ovde sam u login",Toast.LENGTH_SHORT).show();
             val intent = Intent(this,HomePage::class.java)
             startActivity(intent);
             finish()

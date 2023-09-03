@@ -53,6 +53,9 @@ class AllLocationsFragment : Fragment() {
                         locationsArrayList.add(location!!)
 
                     }
+                    locationsArrayList.sortByDescending {
+                        it.rating
+                    }
                     val adapter = MyAdapter(locationsArrayList)
                     locationsRecyclerView.adapter = adapter
                     adapter.setOnItemClickListener(object:MyAdapter.onItemClickListener{

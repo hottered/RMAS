@@ -96,7 +96,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 if (!query.isNullOrEmpty()) {
                     Log.d("MarkerSearch", query)
-                    Log.d("marker1is", markerList[0].title.toString())
+//                    Log.d("marker1is", markerList[0].title.toString())
                     searchAndFocusMarkerByTitle(query)
                 }
                 return true
@@ -134,29 +134,12 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         enableMyLocation()
         fetchMarkersFromFirebase()
 
-
         val locationButton =
             (mapView.findViewById<View>(Integer.parseInt("1")).parent as View).findViewById<View>(Integer.parseInt("2"))
 //        val rlp = locationButton.layoutParams as RelativeLayout.LayoutParams
 
         locationButton.visibility = View.GONE
         // Position on left bottom
-//        rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 1)
-//        rlp.addRule(RelativeLayout.ALIGN_PARENT_LEFT, 50)
-//        rlp.addRule(RelativeLayout.ALIGN_PARENT_START,0)
-//        rlp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 0)
-//        rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0)
-//        rlp.addRule(RelativeLayout.ALIGN_PARENT_END, 0)
-//        rlp.addRule(RelativeLayout.ALIGN_END, 0)
-//
-//        // Remove the duplicate ALIGN_PARENT_LEFT rule
-//        rlp.removeRule(RelativeLayout.ALIGN_PARENT_LEFT)
-//
-//        // Set margins
-//        rlp.setMargins(0, 0, 0, 0)
-//
-//        // Apply the updated layout parameters to the locationButton
-//        locationButton.layoutParams = rlp
     }
 
     private fun fetchMarkersFromFirebase() {

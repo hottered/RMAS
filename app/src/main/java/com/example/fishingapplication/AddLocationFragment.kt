@@ -100,6 +100,7 @@ class AddLocationFragment : Fragment() {
             if(markerTitle.text.isNullOrEmpty() ||
                 markerDescription.text.isNullOrEmpty() ||
                 !isImageLoaded){
+                Toast.makeText(requireContext(),"Please enter all the parameters",Toast.LENGTH_SHORT).show();
                 return@setOnClickListener
             }
             loading.startLoading()
