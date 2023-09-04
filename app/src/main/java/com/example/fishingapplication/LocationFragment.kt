@@ -1,6 +1,8 @@
 package com.example.fishingapplication
 
+import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -117,12 +119,22 @@ class LocationFragment : Fragment() {
             updateMarkerUsersAndNumber(markerKey, sumOfAllUsers!!, numOfUsersWhoRated!!)
 
             val newRating =
-                String.format("%.2f", sumOfAllUsers!!.div(numOfUsersWhoRated!!)).toDouble()
+                String.format("%.1f", sumOfAllUsers!!.div(numOfUsersWhoRated!!)).toDouble()
             updateMarkerRating(markerKey, newRating)
 
 
             val newScore = (ratingBar.rating.toDouble() * 10.0)
             updateUserScore(newScore, ownerOfLocationId)
+
+            val alertDialogBuilder = AlertDialog.Builder(requireContext())
+            alertDialogBuilder.setMessage("Your review has been successfully submitted")
+            alertDialogBuilder.setPositiveButton("OK") { dialogInterface: DialogInterface, _: Int ->
+                dialogInterface.dismiss()
+            }
+            val alertDialog: AlertDialog = alertDialogBuilder.create()
+            alertDialog.show()
+            ratingBar.setIsIndicator(true);
+            submitButton.isClickable = false;
         }
 
         return view
